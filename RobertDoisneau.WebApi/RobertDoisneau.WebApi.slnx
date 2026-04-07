@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="RobertDoisneau.Login.WebApi/RobertDoisneau.WebApi.csproj" />
+  <Project Path="RobertDoisneau.WebApi.GalleryAPI/RobertDoisneau.WebApi.GalleryAPI.csproj" Id="39d1166a-3afa-4973-9613-72ee2628959d" />
 </Solution>

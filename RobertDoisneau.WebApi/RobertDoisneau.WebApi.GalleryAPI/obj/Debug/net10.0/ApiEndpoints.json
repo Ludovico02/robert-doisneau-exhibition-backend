@@ -1,0 +1,75 @@
+[
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_1",
+    "RelativePath": "",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "text/plain"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "RobertDoisneau.WebApi.GalleryAPI.EndPoints.PhotoEndPoints",
+    "Method": "GetGalleryAsync",
+    "RelativePath": "api/gallery/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[RobertDoisneau.WebApi.GalleryAPI.Models.Photo, RobertDoisneau.WebApi.GalleryAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Gallery"
+    ],
+    "EndpointName": "Get Gallery"
+  },
+  {
+    "ContainingType": "RobertDoisneau.WebApi.GalleryAPI.EndPoints.PhotoEndPoints",
+    "Method": "GetPhotoAsync",
+    "RelativePath": "api/gallery/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "RobertDoisneau.WebApi.GalleryAPI.Models.Photo",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ],
+    "Tags": [
+      "Gallery"
+    ],
+    "EndpointName": "GetById"
+  }
+]
