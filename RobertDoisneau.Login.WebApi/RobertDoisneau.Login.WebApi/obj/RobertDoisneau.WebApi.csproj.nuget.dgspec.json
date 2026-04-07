@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi.csproj": {}
+    "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.WebApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi.csproj": {
+    "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.WebApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi.csproj",
-        "projectName": "RobertDoisneau.Login.WebApi",
-        "projectPath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi.csproj",
+        "projectUniqueName": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.WebApi.csproj",
+        "projectName": "RobertDoisneau.WebApi",
+        "projectPath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.WebApi.csproj",
         "packagesPath": "C:\\Users\\Ludovico\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\obj\\",
         "projectStyle": "PackageReference",

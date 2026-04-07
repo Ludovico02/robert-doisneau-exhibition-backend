@@ -200,11 +200,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Ludovico\\Documents\\Lezioni\\Poo\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi.csproj",
-      "projectName": "RobertDoisneau.Login.WebApi",
-      "projectPath": "C:\\Users\\Ludovico\\Documents\\Lezioni\\Poo\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi.csproj",
+      "projectUniqueName": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.WebApi.csproj",
+      "projectName": "RobertDoisneau.WebApi",
+      "projectPath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.WebApi.csproj",
       "packagesPath": "C:\\Users\\Ludovico\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Ludovico\\Documents\\Lezioni\\Poo\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\obj\\",
+      "outputPath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
