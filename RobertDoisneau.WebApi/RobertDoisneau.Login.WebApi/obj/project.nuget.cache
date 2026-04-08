@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "9s1hoE2rec4=",
+  "dgSpecHash": "JMkCYmvDzyw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.WebApi.csproj",
+  "projectFilePath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.Login.WebApi\\RobertDoisneau.Login.WebApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Ludovico\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
     "C:\\Users\\Ludovico\\.nuget\\packages\\dapper\\2.1.72\\dapper.2.1.72.nupkg.sha512",
