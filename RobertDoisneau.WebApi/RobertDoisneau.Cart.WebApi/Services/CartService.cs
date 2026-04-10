@@ -37,17 +37,18 @@ public class CartService : ICartService
         const string sql = @"
             INSERT INTO public.cart (user_id, exhibition_id, quantity, date, added_at)
             VALUES (@UserId, @ExhibitionId, @Quantity, @Date, CURRENT_TIMESTAMP)
-            ON CONFLICT (utente_id, mostra_id, data_visita) 
+            ON CONFLICT (user_id, exhibition_id, date) 
             DO UPDATE SET 
                 quantity = public.cart.quantity + EXCLUDED.quantity,
-                added_at = CURRENT_TIMESTAMP;";
+                added_at = NOW() AT TIME ZONE 'UTC';";
 
         var rowsAffected = await connection.ExecuteAsync(sql, new
         {
             UserId = userId,
             ExhibitionId = exhibitionId,
             Quantity = quantity,
-            Date = date.Date
+            Date = date.Date,
+            AddedAt = DateTime.UtcNow
         });
 
         return rowsAffected > 0;
@@ -77,7 +78,7 @@ public class CartService : ICartService
 
         const string sql = @"
             DELETE FROM public.cart 
-            WHERE added_at < (CURRENT_TIMESTAMP - (@Minutes || ' minutes')::interval)";
+            WHERE added_at < (NOW() AT TIME ZONE 'UTC' - (@Minutes || ' minutes')::interval)";
 
         return await connection.ExecuteAsync(sql, new { Minutes = minutes });
     }

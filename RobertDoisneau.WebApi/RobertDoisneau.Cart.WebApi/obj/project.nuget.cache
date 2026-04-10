@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "j0GRq2R72Fs=",
+  "dgSpecHash": "8csg/td5NuY=",
   "success": true,
   "projectFilePath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.Cart.WebApi\\RobertDoisneau.Cart.WebApi.csproj",
   "expectedPackageFiles": [
@@ -13,9 +13,12 @@
     "C:\\Users\\Ludovico\\.nuget\\packages\\hangfire.postgresql\\1.21.1\\hangfire.postgresql.1.21.1.nupkg.sha512",
     "C:\\Users\\Ludovico\\.nuget\\packages\\hangfire.sqlserver\\1.8.23\\hangfire.sqlserver.1.8.23.nupkg.sha512",
     "C:\\Users\\Ludovico\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.5\\microsoft.aspnetcore.openapi.10.0.5.nupkg.sha512",
-    "C:\\Users\\Ludovico\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512",
+    "C:\\Users\\Ludovico\\.nuget\\packages\\microsoft.openapi\\2.4.1\\microsoft.openapi.2.4.1.nupkg.sha512",
     "C:\\Users\\Ludovico\\.nuget\\packages\\newtonsoft.json\\11.0.1\\newtonsoft.json.11.0.1.nupkg.sha512",
-    "C:\\Users\\Ludovico\\.nuget\\packages\\npgsql\\10.0.2\\npgsql.10.0.2.nupkg.sha512"
+    "C:\\Users\\Ludovico\\.nuget\\packages\\npgsql\\10.0.2\\npgsql.10.0.2.nupkg.sha512",
+    "C:\\Users\\Ludovico\\.nuget\\packages\\scalar.aspnetcore\\2.13.21\\scalar.aspnetcore.2.13.21.nupkg.sha512",
+    "C:\\Users\\Ludovico\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\10.1.7\\swashbuckle.aspnetcore.swagger.10.1.7.nupkg.sha512",
+    "C:\\Users\\Ludovico\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\10.1.7\\swashbuckle.aspnetcore.swaggerui.10.1.7.nupkg.sha512"
   ],
   "logs": [
     {

@@ -81,6 +81,18 @@
             "Npgsql": {
               "target": "Package",
               "version": "[10.0.2, )"
+            },
+            "Scalar.AspNetCore": {
+              "target": "Package",
+              "version": "[2.13.21, )"
+            },
+            "Swashbuckle.AspNetCore.Swagger": {
+              "target": "Package",
+              "version": "[10.1.7, )"
+            },
+            "Swashbuckle.AspNetCore.SwaggerUI": {
+              "target": "Package",
+              "version": "[10.1.7, )"
             }
           },
           "imports": [
