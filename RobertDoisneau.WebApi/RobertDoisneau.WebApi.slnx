@@ -1,3 +1,5 @@
 <Solution>
+  <Project Path="RobertDoisneau.Cart.V2.WebApi/RobertDoisneau.Cart.V2.WebApi.csproj" Id="b40482d4-14d5-409e-b295-64c88ca6e3dc" />
+  <Project Path="RobertDoisneau.Cart.WebApi/RobertDoisneau.Cart.WebApi.csproj" Id="006349c0-3cdf-478b-816d-c53004c43287" />
   <Project Path="RobertDoisneau.Login.WebApi/RobertDoisneau.Login.WebApi.csproj" />
 </Solution>

@@ -1,5 +1,6 @@
 ﻿using RobertDoisneau.Login.WebApi.Models;
 using RobertDoisneau.Login.WebApi.Services;
+using System.Security.Claims;
 
 namespace RobertDoisneau.Login.WebApi.Endpoints;
 
@@ -19,12 +20,13 @@ public static class AuthEndpoints
                 return Results.Unauthorized();
             }
 
-            return Results.Ok(new { message = "Login successfull!", userId = user.Id });
+            return Results.Ok(new { message = "Login successfull!", userId = user.Id, token = "" });
         });
 
         // Sign up
         group.MapPost("/register", async (RegisterRequestHtml request, UserService userService) =>
         {
+
             if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
             {
                 return Results.BadRequest(new { error = "Username e password sono obbligatori." });

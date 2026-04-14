@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RobertDoisneau.Cart.WebApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d038fc51fcca83f1abf920ecb5d4d7842341687f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c15902867ae8cc992425eb51ad28676a23c419d5")]
 [assembly: System.Reflection.AssemblyProductAttribute("RobertDoisneau.Cart.WebApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RobertDoisneau.Cart.WebApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

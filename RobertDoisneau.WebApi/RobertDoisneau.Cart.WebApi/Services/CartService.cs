@@ -33,25 +33,47 @@ public class CartService : ICartService
     {
         using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
+        using var transaction = connection.BeginTransaction();
 
-        const string sql = @"
+        try
+        {
+            // 1. Verifica disponibilità e scala i posti in un colpo solo (Atomic Update)
+            const string updateExhibitionSql = @"
+            UPDATE public.exhibitions 
+            SET quantity = quantity - @Quantity 
+            WHERE id = @ExhibitionId AND quantity >= @Quantity;";
+
+            var updated = await connection.ExecuteAsync(updateExhibitionSql,
+                new { Quantity = quantity, ExhibitionId = exhibitionId }, transaction);
+
+            if (updated == 0) return false; // Posti insufficienti o mostra inesistente
+
+            // 2. Inserisci o aggiorna il carrello
+            const string upsertCartSql = @"
             INSERT INTO public.cart (user_id, exhibition_id, quantity, date, added_at)
-            VALUES (@UserId, @ExhibitionId, @Quantity, @Date, CURRENT_TIMESTAMP)
+            VALUES (@UserId, @ExhibitionId, @Quantity, @Date, @AddedAt)
             ON CONFLICT (user_id, exhibition_id, date) 
             DO UPDATE SET 
                 quantity = public.cart.quantity + EXCLUDED.quantity,
-                added_at = NOW() AT TIME ZONE 'UTC';";
+                added_at = EXCLUDED.added_at;";
 
-        var rowsAffected = await connection.ExecuteAsync(sql, new
+            await connection.ExecuteAsync(upsertCartSql, new
+            {
+                UserId = userId,
+                ExhibitionId = exhibitionId,
+                Quantity = quantity,
+                Date = date.Date,
+                AddedAt = DateTime.UtcNow
+            }, transaction);
+
+            transaction.Commit();
+            return true;
+        }
+        catch
         {
-            UserId = userId,
-            ExhibitionId = exhibitionId,
-            Quantity = quantity,
-            Date = date.Date,
-            AddedAt = DateTime.UtcNow
-        });
-
-        return rowsAffected > 0;
+            transaction.Rollback();
+            throw;
+        }
     }
 
     // 3. Recupera i dettagli per la visualizzazione (Join con Mostre)
@@ -75,11 +97,64 @@ public class CartService : ICartService
     {
         using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
+        using var transaction = connection.BeginTransaction();
 
-        const string sql = @"
+        try
+        {
+            // 1. Elimina i carrelli scaduti e recupera i dati
+            // Usiamo RETURNING per sapere cosa abbiamo appena eliminato
+            const string deleteSql = @"
             DELETE FROM public.cart 
-            WHERE added_at < (NOW() AT TIME ZONE 'UTC' - (@Minutes || ' minutes')::interval)";
+            WHERE added_at < (NOW() AT TIME ZONE 'UTC' - (@Minutes || ' minutes')::interval)
+            RETURNING exhibition_id AS ExhibitionId, quantity AS Quantity;";
 
-        return await connection.ExecuteAsync(sql, new { Minutes = minutes });
+            // Usiamo una classe d'appoggio invece della tupla
+            var expiredItems = await connection.QueryAsync<ExpiredItem>(
+                deleteSql,
+                new { Minutes = minutes },
+                transaction);
+
+            int totalRestored = 0;
+
+            // 2. Ciclo sui risultati per ripristinare le disponibilità
+            foreach (var item in expiredItems)
+            {
+                const string restoreSql = @"
+                UPDATE public.exhibitions 
+                SET quantity = quantity + @Quantity 
+                WHERE id = @ExhibitionId;";
+
+                await connection.ExecuteAsync(restoreSql, new
+                {
+                    Quantity = item.Quantity,
+                    ExhibitionId = item.ExhibitionId
+                }, transaction);
+
+                totalRestored += item.Quantity;
+            }
+
+            transaction.Commit();
+
+            if (totalRestored > 0)
+            {
+                _logger.LogInformation("Cleanup: Rimossi {Rows} record dal carrello. Ripristinati {Tickets} posti.",
+                    expiredItems.Count(), totalRestored);
+            }
+
+            return expiredItems.Count();
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+            _logger.LogError(ex, "Errore durante il cleanup automatico.");
+            throw;
+        }
+    }
+
+    // Classe di supporto interna per evitare le Tuple
+    private class ExpiredItem
+    {
+        public int ExhibitionId { get; set; }
+        public int Quantity { get; set; }
     }
 }
