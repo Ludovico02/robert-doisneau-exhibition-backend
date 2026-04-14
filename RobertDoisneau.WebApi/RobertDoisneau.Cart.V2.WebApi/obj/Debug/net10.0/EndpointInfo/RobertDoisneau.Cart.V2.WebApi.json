@@ -1,0 +1,133 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "RobertDoisneau.Cart.V2.WebApi | v1",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://localhost:7224"
+    },
+    {
+      "url": "http://localhost:5029"
+    }
+  ],
+  "paths": {
+    "/api/tickets/user/{userId}": {
+      "get": {
+        "tags": [
+          "UsersEndpoints"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/checkout/buy": {
+      "post": {
+        "tags": [
+          "Checkout"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/exhibitions": {
+      "get": {
+        "tags": [
+          "Exhibitions"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CheckoutItem": {
+        "type": "object",
+        "properties": {
+          "ticketCategoryId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "CheckoutRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "items": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CheckoutItem"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "UsersEndpoints"
+    },
+    {
+      "name": "Checkout"
+    },
+    {
+      "name": "Exhibitions"
+    }
+  ]
+}

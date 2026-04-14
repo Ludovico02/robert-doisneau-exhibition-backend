@@ -1,0 +1,68 @@
+[
+  {
+    "ContainingType": "RobertDoisneau.Cart.V2.WebApi.Endpoints.CheckoutEndpoints",
+    "Method": "ProcessCheckoutAsync",
+    "RelativePath": "api/checkout/buy",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "RobertDoisneau.Cart.V2.WebApi.Models.CheckoutRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Checkout"
+    ]
+  },
+  {
+    "ContainingType": "RobertDoisneau.Cart.V2.WebApi.Endpoints.ExhibitionsEndpoints",
+    "Method": "GetActiveExhibitionsAsync",
+    "RelativePath": "api/exhibitions/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ],
+    "Tags": [
+      "Exhibitions"
+    ]
+  },
+  {
+    "ContainingType": "RobertDoisneau.Cart.V2.WebApi.Endpoints.UsersEndpoints",
+    "Method": "GetTicketsAsync",
+    "RelativePath": "api/tickets/user/{userId:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  }
+]

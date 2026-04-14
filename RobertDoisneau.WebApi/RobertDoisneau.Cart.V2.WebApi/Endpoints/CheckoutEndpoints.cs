@@ -1,0 +1,36 @@
+﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using RobertDoisneau.Cart.V2.WebApi.Models;
+using RobertDoisneau.Cart.V2.WebApi.Services;
+using System.Numerics;
+
+namespace RobertDoisneau.Cart.V2.WebApi.Endpoints;
+
+public static class CheckoutEndpoints
+{
+    public static void MapCheckoutEndpoints(this IEndpointRouteBuilder route)
+    {
+        var group = route.MapGroup("/api/checkout").WithTags("Checkout");
+
+        group.MapPost("/buy", ProcessCheckoutAsync);
+    }
+
+    public static async Task<IResult> ProcessCheckoutAsync(CheckoutRequest request, CheckoutService checkoutService)
+    {
+                    // Validazione base
+            if (request == null || request.Items == null || !request.Items.Any())
+                return Results.BadRequest(new { message = "Il carrello è vuoto o la richiesta non è valida." });
+
+            if (request.UserId <= 0)
+                return Results.Unauthorized(); // Più avanti restituirai 401 Unauthorized basato sul JWT
+
+            // Chiamata al servizio Dapper
+            var success = await checkoutService.ProcessPurchaseAsync(request.UserId, request.Items);
+
+            if (!success)
+                return Results.Conflict(new { message = "Ci dispiace, i biglietti richiesti sono esauriti o non più disponibili." });
+
+            return Results.Ok(new { message = "Acquisto completato con successo! I tuoi biglietti sono stati generati." });
+    }
+}
