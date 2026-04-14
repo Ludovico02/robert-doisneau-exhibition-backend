@@ -50,6 +50,10 @@ public class PhotoService : IPhotoService
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
+
+       
+        string baseUrl = "/Img Foto Galleria/";
+
         string selectionQuery = """
             SELECT 
             id as Id,
@@ -64,6 +68,13 @@ public class PhotoService : IPhotoService
             ORDER BY title_ita ASC
             """;
 
-        return await connection.QueryAsync<Photo>(selectionQuery);
+        var photos = (await connection.QueryAsync<Photo>(selectionQuery)).ToList();
+
+        foreach (var p in photos)
+        {
+            p.UrlImage = baseUrl + p.UrlImage;
+        }
+
+        return photos;
     }
 }
