@@ -4,8 +4,6 @@ using RobertDoisneau.Cart.V2.WebApi.Models;
 
 namespace RobertDoisneau.Cart.V2.WebApi.Services;
 
-
-// Mettere nel Program.cs Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 public class ExhibitionService
 {
     private readonly string _connectionString;

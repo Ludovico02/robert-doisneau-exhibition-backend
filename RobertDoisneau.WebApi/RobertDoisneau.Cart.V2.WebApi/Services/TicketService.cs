@@ -17,8 +17,6 @@ public class TicketService
 
     public async Task<IEnumerable<PurchasedTicket>> GetUserTicketsAsync(int userId)
     {
-        // Niente più alias. Lasciamo i nomi originali del DB con gli underscore.
-        // Dapper farà la magia e li mapperà su UserId e TicketCategoryId.
         var sql = @"
         SELECT 
             id, 
@@ -33,7 +31,6 @@ public class TicketService
 
         using var connection = new NpgsqlConnection(_connectionString);
 
-        // Passiamo il TUO modello a Dapper
         return await connection.QueryAsync<PurchasedTicket>(sql, new { UserId = userId });
     }
 }
