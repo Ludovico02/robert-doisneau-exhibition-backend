@@ -32,12 +32,13 @@ if (string.IsNullOrWhiteSpace(jwtKey))
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.IncludeErrorDetails = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = false,
+            ValidateIssuerSigningKey = false,
             ValidIssuer = builder.Configuration.GetValue<string>("Jwt:Issuer"),
             ValidAudience = builder.Configuration.GetValue<string>("Jwt:Audience"),
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))

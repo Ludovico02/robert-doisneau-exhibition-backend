@@ -11,13 +11,18 @@ public static class UsersEndpoints
     {
         var group = route.MapGroup("/api/tickets").WithTags("Tickets");
 
-        group.MapGet("/my-tickets", GetTicketsAsync).RequireAuthorization();
+        group.MapGet("/my-tickets", GetTicketsAsync);
     }
 
     public static async Task<IResult> GetTicketsAsync(HttpContext httpContext, TicketService ticketService)
     {
         // Estraiamo l'ID dell'utente loggato dal Token JWT
         var userIdString = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        foreach (var claim in httpContext.User.Claims)
+        {
+            Console.WriteLine($"Type: {claim.Type} - Value: {claim.Value}");
+        }
 
         // Se il token è manomesso o manca l'ID, lo blocchiamo
         if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))

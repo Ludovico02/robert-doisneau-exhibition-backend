@@ -25,6 +25,7 @@ public static class CheckoutEndpoints
         // Se per qualche assurdo motivo non c'è l'ID nel token o non è un numero, blocchiamo tutto
         if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
         {
+            Console.WriteLine(string.IsNullOrEmpty(userIdString));
             return Results.Unauthorized();
         }
 

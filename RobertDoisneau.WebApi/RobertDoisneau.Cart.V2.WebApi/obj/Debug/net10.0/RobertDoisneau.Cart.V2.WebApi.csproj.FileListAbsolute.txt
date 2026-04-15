@@ -44,3 +44,5 @@ C:\Users\Ludovico\Desktop\RobertDoisneauBackEnd\RobertDoisneau.WebApi\RobertDois
 C:\Users\Ludovico\Desktop\RobertDoisneauBackEnd\RobertDoisneau.WebApi\RobertDoisneau.Cart.V2.WebApi\bin\Debug\net10.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\Ludovico\Desktop\RobertDoisneauBackEnd\RobertDoisneau.WebApi\RobertDoisneau.Cart.V2.WebApi\bin\Debug\net10.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Ludovico\Desktop\RobertDoisneauBackEnd\RobertDoisneau.WebApi\RobertDoisneau.Cart.V2.WebApi\bin\Debug\net10.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Ludovico\Desktop\RobertDoisneauBackEnd\RobertDoisneau.WebApi\RobertDoisneau.Cart.V2.WebApi\bin\Debug\net10.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Ludovico\Desktop\RobertDoisneauBackEnd\RobertDoisneau.WebApi\RobertDoisneau.Cart.V2.WebApi\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerGen.dll

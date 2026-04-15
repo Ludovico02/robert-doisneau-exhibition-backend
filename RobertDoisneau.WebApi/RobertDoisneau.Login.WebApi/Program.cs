@@ -39,7 +39,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuer = true,
             ValidateAudience = true,
-            ValidateLifetime = true,
+            ValidateLifetime = false,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration.GetValue<string>("Jwt:Issuer"),
             ValidAudience = builder.Configuration.GetValue<string>("Jwt:Audience"),
@@ -62,9 +62,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseAuthentication();
-
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.MapAuthEndpoints();
 

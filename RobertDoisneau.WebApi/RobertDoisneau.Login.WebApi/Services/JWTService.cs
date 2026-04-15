@@ -28,7 +28,11 @@ public class JWTService
 
         var claims = new[]
         {
-           new Claim(JwtRegisteredClaimNames.Sub, user.Email ?? user.Username),
+           new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+    
+           new Claim(JwtRegisteredClaimNames.Email, user.Email),
+           new Claim(ClaimTypes.Name, user.Username),
+
            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
 
            // Per ora non ci sono ruoli, lo imposto fisso a ruolo User
