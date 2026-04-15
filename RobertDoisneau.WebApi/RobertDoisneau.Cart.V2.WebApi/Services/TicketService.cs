@@ -18,16 +18,15 @@ public class TicketService
     public async Task<IEnumerable<PurchasedTicket>> GetUserTicketsAsync(int userId)
     {
         var sql = @"
-        SELECT 
-            id, 
-            user_id, 
-            ticket_category_id, 
-            unique_code, 
-            price_paid, 
-            purchase_date
-        FROM purchased_tickets
-        WHERE user_id = @UserId
-        ORDER BY purchase_date DESC;";
+            SELECT 
+                id, 
+                user_id, 
+                unique_code, 
+                price_paid, 
+                purchase_date
+            FROM purchased_tickets
+            WHERE user_id = @UserId
+            ORDER BY purchase_date DESC;";
 
         using var connection = new NpgsqlConnection(_connectionString);
 

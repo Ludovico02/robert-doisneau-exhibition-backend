@@ -11,7 +11,7 @@ public class PurchasedTicket
     public int UserId { get; set; }
 
     [Required]
-    public int TicketCategoryId { get; set; }
+    public int ExhibitionId { get; set; }
 
     [Required]
     [StringLength(100)]

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RobertDoisneau.Login.WebApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+32ddd2d12ccba61b216b9a280087802dc50ebd3b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ddf8b03b343b4c35614a6ed26bab33526e4dee0c")]
 [assembly: System.Reflection.AssemblyProductAttribute("RobertDoisneau.Login.WebApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RobertDoisneau.Login.WebApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
