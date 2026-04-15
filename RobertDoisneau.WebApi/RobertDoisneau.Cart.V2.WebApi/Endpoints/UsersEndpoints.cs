@@ -1,4 +1,7 @@
-﻿using RobertDoisneau.Cart.V2.WebApi.Services;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims; // FONDAMENTALE: per leggere il token
+using RobertDoisneau.Cart.V2.WebApi.Services;
 
 namespace RobertDoisneau.Cart.V2.WebApi.Endpoints;
 
@@ -6,20 +9,26 @@ public static class UsersEndpoints
 {
     public static void MapUsersEndpoints(this IEndpointRouteBuilder route)
     {
-        // Qui potresti aggiungere endpoint per la gestione degli utenti, ad esempio:
-        // group.MapPost("/register", RegisterUserAsync);
-        // group.MapPost("/login", LoginUserAsync);
-        route.MapGet("/api/tickets/user/{userId:int}", GetTicketsAsync);
+        var group = route.MapGroup("/api/tickets").WithTags("Tickets");
+
+        group.MapGet("/my-tickets", GetTicketsAsync).RequireAuthorization();
     }
 
-    public static async Task<IResult> GetTicketsAsync(int userId, TicketService ticketService)
+    public static async Task<IResult> GetTicketsAsync(HttpContext httpContext, TicketService ticketService)
     {
-            if (userId <= 0)
-                return Results.BadRequest(new { message = "ID utente non valido." });
+        // Estraiamo l'ID dell'utente loggato dal Token JWT
+        var userIdString = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var tickets = await ticketService.GetUserTicketsAsync(userId);
+        // Se il token è manomesso o manca l'ID, lo blocchiamo
+        if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+        {
+            return Results.Unauthorized();
+        }
 
-            // Restituisce sempre 200 OK, anche se la lista è vuota (è il comportamento REST corretto)
-            return Results.Ok(tickets);
+        // Ora usiamo l'ID sicuro letto dal token per cercare i biglietti nel DB
+        var tickets = await ticketService.GetUserTicketsAsync(userId);
+
+        // Restituisce sempre 200 OK, anche se la lista è vuota
+        return Results.Ok(tickets);
     }
 }

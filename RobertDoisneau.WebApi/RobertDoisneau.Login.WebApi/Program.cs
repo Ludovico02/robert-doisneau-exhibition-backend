@@ -24,23 +24,6 @@ builder.Services.AddOpenApi();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<JWTService>();
 
-// Token JWT
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(jwtOptions =>
-    {
-        jwtOptions.Authority = builder.Configuration["Jwt:Authority"];
-    });
-
-var app = builder.Build();
-
-app.UseCors("PermettiTutto");
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
 //JWT Authentication
 var jwtKey = builder.Configuration.GetValue<string>("Jwt:Key");
 if (string.IsNullOrWhiteSpace(jwtKey))
@@ -48,6 +31,7 @@ if (string.IsNullOrWhiteSpace(jwtKey))
     throw new InvalidOperationException("Configuration value 'Jwt:Key' is missing or empty. Set it in appsettings or environment variables.");
 }
 
+// Token JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -63,9 +47,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-app.UseAuthentication();
+var app = builder.Build();
 
-app.UseAuthorization();
+app.UseCors("PermettiTutto");
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "v1");
+    });
+}
+
+app.UseAuthentication();
 
 app.UseHttpsRedirection();
 

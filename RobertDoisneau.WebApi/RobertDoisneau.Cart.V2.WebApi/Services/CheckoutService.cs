@@ -27,7 +27,7 @@ public class CheckoutService
             foreach (var item in items)
             {
                 // Leggiamo la disponibilità e BLOCCHIAMO LA RIGA con FOR UPDATE
-                // Lo faccio per le Race Conditions (2 utenti che comprano contemporaneamente gli ultimi biglietti)
+                // Lo faccio per le Race Conditions (2 users che comprano contemporaneamente gli ultimi biglietti)
                 var checkSql = @"
                     SELECT e.id as exhibition_id, e.availability, tc.price 
                     FROM ticket_categories tc

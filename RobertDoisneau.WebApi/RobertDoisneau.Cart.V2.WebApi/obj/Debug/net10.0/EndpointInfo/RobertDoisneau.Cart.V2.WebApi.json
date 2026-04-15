@@ -13,30 +13,6 @@
     }
   ],
   "paths": {
-    "/api/tickets/user/{userId}": {
-      "get": {
-        "tags": [
-          "UsersEndpoints"
-        ],
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "pattern": "^-?(?:0|[1-9]\\d*)$",
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/checkout/buy": {
       "post": {
         "tags": [
@@ -52,6 +28,18 @@
           },
           "required": true
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/tickets/my-tickets": {
+      "get": {
+        "tags": [
+          "Tickets"
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -145,10 +133,10 @@
   },
   "tags": [
     {
-      "name": "UsersEndpoints"
+      "name": "Checkout"
     },
     {
-      "name": "Checkout"
+      "name": "Tickets"
     },
     {
       "name": "Exhibitions"

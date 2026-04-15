@@ -71,23 +71,20 @@
   {
     "ContainingType": "RobertDoisneau.Cart.V2.WebApi.Endpoints.UsersEndpoints",
     "Method": "GetTicketsAsync",
-    "RelativePath": "api/tickets/user/{userId:int}",
+    "RelativePath": "api/tickets/my-tickets",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": [
       {
         "Type": "System.Void",
         "MediaTypes": [],
         "StatusCode": 200
       }
+    ],
+    "Tags": [
+      "Tickets"
     ]
   }
 ]
