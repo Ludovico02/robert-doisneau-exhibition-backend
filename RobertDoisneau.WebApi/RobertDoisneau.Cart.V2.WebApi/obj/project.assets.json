@@ -497,23 +497,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Ludovico\\.nuget\\packages\\": {},
+    "C:\\Users\\Alessio\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.Cart.V2.WebApi\\RobertDoisneau.Cart.V2.WebApi.csproj",
+      "projectUniqueName": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.Cart.V2.WebApi\\RobertDoisneau.Cart.V2.WebApi.csproj",
       "projectName": "RobertDoisneau.Cart.V2.WebApi",
-      "projectPath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.Cart.V2.WebApi\\RobertDoisneau.Cart.V2.WebApi.csproj",
-      "packagesPath": "C:\\Users\\Ludovico\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.Cart.V2.WebApi\\obj\\",
+      "projectPath": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.Cart.V2.WebApi\\RobertDoisneau.Cart.V2.WebApi.csproj",
+      "packagesPath": "C:\\Users\\Alessio\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.Cart.V2.WebApi\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Ludovico\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Alessio\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

@@ -12,6 +12,10 @@ public class Exhibition
     public string Title { get; set; } = string.Empty;
 
     public string? Description { get; set; }
+    public string? Description2 { get; set; }
+    public string? Description3 { get; set; }
+
+    public decimal? Price { get; set; }
 
     [Required]
     public int TotalCapacity { get; set; }
@@ -19,11 +23,6 @@ public class Exhibition
     [Required]
     public int Availability { get; set; }
 
-    [Required]
-    public DateTime StartDate { get; set; }
 
-    [Required]
-    public DateTime EndDate { get; set; }
 
-    public virtual List<TicketCategory> Categories { get; set; } = [];
 }
