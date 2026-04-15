@@ -10,6 +10,7 @@ public static class ExhibitionsEndpoints
 
         // Risponderà a GET /api/exhibitions
         group.MapGet("/", GetActiveExhibitionsAsync);
+        group.MapGet("/{id:int}", GetExhibitionCategoriesAsync);
     }
 
     public static async Task<IResult> GetActiveExhibitionsAsync(ExhibitionService exhibitionService)
@@ -19,5 +20,14 @@ public static class ExhibitionsEndpoints
         return exhibitions.Any()
             ? Results.Ok(exhibitions)
             : Results.NotFound(new { message = "Al momento non ci sono mostre disponibili." });
+    }
+
+    public static async Task<IResult> GetExhibitionCategoriesAsync(int id, ExhibitionService exhibitionService)
+    {
+        var categories = await exhibitionService.GetTicketCategoriesByExhibitionIdAsync(id);
+
+        return categories.Any()
+            ? Results.Ok(categories)
+            : Results.NotFound(new { message = "Nessuna categoria trovata per questa mostra." });
     }
 }

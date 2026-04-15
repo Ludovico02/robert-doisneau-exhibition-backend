@@ -15,38 +15,49 @@ public class ExhibitionService
         _logger = logger;
     }
 
-
     public async Task<IEnumerable<Exhibition>> GetAllActiveExhibitionsAsync()
     {
-        var sql = @"
-            SELECT e.id, e.title, e.description, e.availability,
-                   tc.id, tc.exhibition_id, tc.name, tc.price
-            FROM exhibitions e
-            LEFT JOIN ticket_categories tc ON e.id = tc.exhibition_id
-            WHERE e.availability > 0;";
-
         using var connection = new NpgsqlConnection(_connectionString);
 
-        var exhibitionDictionary = new Dictionary<int, Exhibition>();
+        var exhibitionsSql = """
+            SELECT e.id, e.title, e.description, e.availability 
+            FROM exhibitions e 
+            WHERE availability > 0;
+            """;
+        var exhibitions = (await connection.QueryAsync<Exhibition>(exhibitionsSql)).ToList();
 
-        var result = await connection.QueryAsync<Exhibition, TicketCategory, Exhibition>(
-            sql,
-            (exhibition, category) =>
-            {
-                if (!exhibitionDictionary.TryGetValue(exhibition.Id, out var currentExhibition))
-                {
-                    currentExhibition = exhibition;
-                    exhibitionDictionary.Add(currentExhibition.Id, currentExhibition);
-                }
+        if (!exhibitions.Any())
+            return exhibitions;
 
-                if (category != null)
-                    currentExhibition.Categories.Add(category);
+        var categoriesSql = """
+            SELECT tc.id, tc.exhibition_id, tc.name, tc.price 
+            FROM ticket_categories tc;
+            """;
 
-                return currentExhibition;
-            },
-            splitOn: "id" // Dapper capisce che qui inizia la seconda tabella
-        );
+        var allCategories = await connection.QueryAsync<TicketCategory>(categoriesSql);
 
-        return exhibitionDictionary.Values;
+        foreach (var exhibition in exhibitions)
+        {
+            var exhibitionTickets = allCategories.Where(c => c.ExhibitionId == exhibition.Id).ToList();
+
+            exhibition.Categories.AddRange(exhibitionTickets);
+        }
+
+        return exhibitions;
+    }
+
+    public async Task<IEnumerable<TicketCategory>> GetTicketCategoriesByExhibitionIdAsync(int exhibitionId)
+    {
+        using var connection = new NpgsqlConnection(_connectionString);
+
+        var sql = """
+        SELECT id, exhibition_id AS ExhibitionId, name, price 
+        FROM ticket_categories 
+        WHERE exhibition_id = @ExhibitionId;
+        """;
+
+        var categories = await connection.QueryAsync<TicketCategory>(sql, new { ExhibitionId = exhibitionId });
+
+        return categories;
     }
 }
