@@ -1,24 +1,24 @@
 {
   "version": 2,
-  "dgSpecHash": "Mgd4vOEi4Ug=",
+  "dgSpecHash": "ZkIYXfSr2CM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
+  "projectFilePath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackendNuovo\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Alessio\\.nuget\\packages\\dapper\\2.1.72\\dapper.2.1.72.nupkg.sha512",
-    "C:\\Users\\Alessio\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.5\\microsoft.aspnetcore.openapi.10.0.5.nupkg.sha512",
-    "C:\\Users\\Alessio\\.nuget\\packages\\microsoft.extensions.configuration.json\\10.0.5\\microsoft.extensions.configuration.json.10.0.5.nupkg.sha512",
-    "C:\\Users\\Alessio\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512",
-    "C:\\Users\\Alessio\\.nuget\\packages\\npgsql\\10.0.2\\npgsql.10.0.2.nupkg.sha512",
-    "C:\\Users\\Alessio\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\10.1.7\\swashbuckle.aspnetcore.swaggerui.10.1.7.nupkg.sha512"
+    "C:\\Users\\Ludovico\\.nuget\\packages\\dapper\\2.1.72\\dapper.2.1.72.nupkg.sha512",
+    "C:\\Users\\Ludovico\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.5\\microsoft.aspnetcore.openapi.10.0.5.nupkg.sha512",
+    "C:\\Users\\Ludovico\\.nuget\\packages\\microsoft.extensions.configuration.json\\10.0.5\\microsoft.extensions.configuration.json.10.0.5.nupkg.sha512",
+    "C:\\Users\\Ludovico\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512",
+    "C:\\Users\\Ludovico\\.nuget\\packages\\npgsql\\10.0.2\\npgsql.10.0.2.nupkg.sha512",
+    "C:\\Users\\Ludovico\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\10.1.7\\swashbuckle.aspnetcore.swaggerui.10.1.7.nupkg.sha512"
   ],
   "logs": [
     {
       "code": "NU1510",
       "level": "Warning",
       "message": "PackageReference Microsoft.Extensions.Configuration.Json will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
-      "projectPath": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
+      "projectPath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackendNuovo\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
+      "filePath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackendNuovo\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
       "libraryId": "Microsoft.Extensions.Configuration.Json",
       "targetGraphs": [
         "net10.0"
