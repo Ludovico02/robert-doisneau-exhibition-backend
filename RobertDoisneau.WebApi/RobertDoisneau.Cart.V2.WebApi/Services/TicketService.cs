@@ -19,14 +19,17 @@ public class TicketService
     {
         var sql = @"
             SELECT 
-                id, 
-                user_id, 
-                unique_code, 
-                price_paid, 
-                purchase_date
-            FROM purchased_tickets
-            WHERE user_id = @UserId
-            ORDER BY purchase_date DESC;";
+                pt.id, 
+                pt.user_id, 
+                pt.exhibition_id,
+                pt.unique_code, 
+                pt.price_paid, 
+                pt.purchase_date,
+                e.title AS ExhibitionTitle  -- Prendiamo il titolo dall'altra tabella
+            FROM purchased_tickets pt
+            INNER JOIN exhibitions e ON pt.exhibition_id = e.id
+            WHERE pt.user_id = @UserId
+            ORDER BY pt.purchase_date DESC;";
 
         using var connection = new NpgsqlConnection(_connectionString);
 

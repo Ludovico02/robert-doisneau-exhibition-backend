@@ -22,4 +22,5 @@ public class PurchasedTicket
     public decimal PricePaid { get; set; }
 
     public DateTime PurchaseDate { get; set; }
+    public string ExhibitionTitle { get; set; } = string.Empty;
 }
