@@ -1,55 +1,59 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using RobertDoisneau.Login.WebApi.Endpoints;
-using RobertDoisneau.Login.WebApi.Services;
+using RobertDoisneau.Cart.V2.WebApi.Endpoints;
+using RobertDoisneau.Cart.V2.WebApi.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PermettiTutto", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        // Cambiare l'allow any origin con il link del frontend
-        policy.AllowAnyOrigin()   // Accetta richieste da qualsiasi pagina HTML
-              .AllowAnyMethod()   // Accetta POST, GET, ecc.
-              .AllowAnyHeader();  // Accetta qualsiasi tipo di dato (JSON)
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
     });
 });
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<JWTService>();
+builder.Services.AddScoped<ExhibitionService>();
+builder.Services.AddScoped<TicketService>();
+builder.Services.AddScoped<CheckoutService>();
 
-//JWT Authentication
 var jwtKey = builder.Configuration.GetValue<string>("Jwt:Key");
 if (string.IsNullOrWhiteSpace(jwtKey))
 {
-    throw new InvalidOperationException("Configuration value 'Jwt:Key' is missing or empty. Set it in appsettings or environment variables.");
+    throw new InvalidOperationException("Configuration value 'Jwt:Key' is missing in appsettings.json.");
 }
 
 // Token JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.IncludeErrorDetails = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
+            ValidateIssuer = false,
+            ValidateAudience = false,
             ValidateLifetime = false,
-            ValidateIssuerSigningKey = true,
+            ValidateIssuerSigningKey = false,
             ValidIssuer = builder.Configuration.GetValue<string>("Jwt:Issuer"),
             ValidAudience = builder.Configuration.GetValue<string>("Jwt:Audience"),
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
     });
 
+builder.Services.AddAuthorization();
+
+// Add services to the container.
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+
 var app = builder.Build();
 
-app.UseCors("PermettiTutto");
+app.UseCors("AllowAll");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -58,15 +62,17 @@ if (app.Environment.IsDevelopment())
 
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "v1");
+        options.SwaggerEndpoint("/openapi/v1.json", "v2");
     });
 }
 
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapAuthEndpoints();
+app.MapCheckoutEndpoints();
+app.MapUsersEndpoints(); 
+app.MapExhibitionsEndpoints();
 
 app.Run();
-

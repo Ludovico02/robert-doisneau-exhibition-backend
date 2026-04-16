@@ -21,15 +21,14 @@ public class UserService
         using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        // Filtriamo direttamente nel database tramite la clausola WHERE
         const string query = """
         SELECT 
             id, 
             username, 
             password_hash as PasswordHash, 
             email, 
-            creation_date as CreationDate
-        FROM public.utenti
+            created_at as CreatedAt
+        FROM public.users
         WHERE username = @Username;
         """;
 
@@ -48,8 +47,8 @@ public class UserService
             username, 
             password_hash as PasswordHash, 
             email, 
-            creation_date as CreationDate
-        FROM public.utenti
+            created_at as CreatedAt
+        FROM public.users
         WHERE email = @Email;
         """;
 
@@ -62,9 +61,9 @@ public class UserService
         await connection.OpenAsync();
 
         const string query = """
-            INSERT INTO public.utenti
-            (username, password_hash, email, creation_date)
-            VALUES(@Username, @PasswordHash, @Email, @CreationDate)
+            INSERT INTO public.users
+            (username, password_hash, email, created_at)
+            VALUES(@Username, @PasswordHash, @Email, @CreatedAt)
             RETURNING id;
             """;
 
