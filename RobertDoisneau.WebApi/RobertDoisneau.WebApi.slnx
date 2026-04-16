@@ -1,5 +1,10 @@
 <Solution>
+<<<<<<< HEAD
   <Project Path="RobertDoisneau.Cart.V2.WebApi/RobertDoisneau.Cart.V2.WebApi.csproj" Id="b40482d4-14d5-409e-b295-64c88ca6e3dc" />
   <Project Path="RobertDoisneau.Login.WebApi/RobertDoisneau.Login.WebApi.csproj" />
   <Project Path="RobertDoisneau.WebApi.GalleryAPI/RobertDoisneau.WebApi.GalleryAPI.csproj" />
+=======
+  <Project Path="RobertDoisneau.Login.WebApi/RobertDoisneau.WebApi.csproj" />
+  <Project Path="RobertDoisneau.WebApi.GalleryAPI/RobertDoisneau.WebApi.GalleryAPI.csproj" Id="39d1166a-3afa-4973-9613-72ee2628959d" />
+>>>>>>> main
 </Solution>
