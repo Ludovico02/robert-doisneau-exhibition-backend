@@ -11,9 +11,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("PermettiTutto", policy =>
     {
         // Cambiare l'allow any origin con il link del frontend
-        policy.AllowAnyOrigin()   // Accetta richieste da qualsiasi pagina HTML
+        policy.WithOrigins("http://127.0.0.1:5500")
               .AllowAnyMethod()   // Accetta POST, GET, ecc.
-              .AllowAnyHeader();  // Accetta qualsiasi tipo di dato (JSON)
+              .AllowAnyHeader()   // Accetta qualsiasi tipo di dato (JSON)
+              .AllowCredentials(); // Permette l'invio di cookie (necessario per l'autenticazione)
     });
 });
 

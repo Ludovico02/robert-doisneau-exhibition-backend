@@ -1,6 +1,10 @@
+# Visual Studio temporanei
 .vs/
-[Bb]in/
-[Oo]bj/
-*.user
+[Dd]ebug/
+[Rr]elease/
+bin/
+obj/
+
+# File utente
 *.suo
-*.json.cache
+*.user
