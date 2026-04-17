@@ -9,7 +9,8 @@ public static class PhotoEndPoints
     {
 
         var group = route.MapGroup("/api/gallery")
-            .WithTags("Gallery");
+            .WithTags("Gallery")
+            .RequireAuthorization();
 
 
         group.MapGet("", GetGalleryAsync)

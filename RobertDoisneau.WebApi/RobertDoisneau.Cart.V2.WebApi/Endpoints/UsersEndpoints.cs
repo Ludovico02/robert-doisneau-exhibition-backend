@@ -19,10 +19,10 @@ public static class UsersEndpoints
         // Estraiamo l'ID dell'utente loggato dal Token JWT
         var userIdString = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        foreach (var claim in httpContext.User.Claims)
-        {
-            Console.WriteLine($"Type: {claim.Type} - Value: {claim.Value}");
-        }
+        //foreach (var claim in httpContext.User.Claims)
+        //{
+        //    Console.WriteLine($"Type: {claim.Type} - Value: {claim.Value}");
+        //}
 
         // Se il token è manomesso o manca l'ID, lo blocchiamo
         if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))

@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.IdentityModel.Tokens;
 using RobertDoisneau.WebApi.GalleryAPI.EndPoints;
 using RobertDoisneau.WebApi.GalleryAPI.Services;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,17 +23,57 @@ builder.Services.AddRateLimiter(options =>
 
 
 builder.Services.AddCors(options =>
-options.AddPolicy("PermettiTutto", policy =>
-    policy.AllowAnyOrigin()
-          .AllowAnyMethod()
-          .AllowAnyHeader()
-          ));
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.WithOrigins("http://127.0.0.1:5500")
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
+var jwtKey = builder.Configuration.GetValue<string>("Jwt:Key");
+if (string.IsNullOrWhiteSpace(jwtKey))
+{
+    throw new InvalidOperationException("Configuration value 'Jwt:Key' is missing in appsettings.json.");
+}
+
+// Token JWT
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.IncludeErrorDetails = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration.GetValue<string>("Jwt:Issuer"),
+            ValidAudience = builder.Configuration.GetValue<string>("Jwt:Audience"),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                context.Token = context.Request.Cookies["X-Access-Token"];
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 builder.Services.AddOpenApi();
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 app.UseRateLimiter();
 app.UseCors("PermettiTutto");
@@ -44,6 +87,9 @@ if (app.Environment.IsDevelopment())
     });
 }
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGet("/", () =>
 {

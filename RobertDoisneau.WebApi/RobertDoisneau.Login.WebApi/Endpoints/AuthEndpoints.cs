@@ -15,7 +15,13 @@ public static class AuthEndpoints
 
         group.MapPost("/logout", (HttpContext context) =>
         {
-            context.Response.Cookies.Delete("X-Access-Token");
+            context.Response.Cookies.Delete("X-Access-Token", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Deve essere uguale a come lo hai creato
+                SameSite = SameSiteMode.None, // Deve essere uguale a come lo hai creato
+                Path = "/" // <--- QUESTO È IL PUNTO CRITICO: deve corrispondere al path di creazione
+            });
             return Results.Ok(new { message = "Logged out successfully" });
         });
     }
