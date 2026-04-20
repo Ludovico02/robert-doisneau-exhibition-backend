@@ -1,5 +1,6 @@
 ﻿using RobertDoisneau.Login.WebApi.Models;
 using RobertDoisneau.Login.WebApi.Services;
+using System.Text.RegularExpressions;
 
 namespace RobertDoisneau.Login.WebApi.Endpoints;
 
@@ -60,6 +61,11 @@ public static class AuthEndpoints
             return Results.BadRequest(new { error = "Username and password are mandatory." });
         }
 
+        if (!Regex.IsMatch(request.Username, @"^[a-zA-Z0-9]+$"))
+        {
+            return Results.BadRequest(new { error = "The username can only contain letters and numbers." });
+        }
+       
         var existingUser = await userService.GetByUsernameAsync(request.Username);
         if (existingUser != null)
         {
