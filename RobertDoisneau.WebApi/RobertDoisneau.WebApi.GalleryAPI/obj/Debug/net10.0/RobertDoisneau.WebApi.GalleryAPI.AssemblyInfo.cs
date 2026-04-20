@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RobertDoisneau.WebApi.GalleryAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ab3d4f92270f1fda395f09f28b1a1fb0efa878ba")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f4832c2ccd28cb735239c0de1b66e9d702a1a1d2")]
 [assembly: System.Reflection.AssemblyProductAttribute("RobertDoisneau.WebApi.GalleryAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RobertDoisneau.WebApi.GalleryAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

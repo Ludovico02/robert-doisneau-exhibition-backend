@@ -545,23 +545,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Ludovico\\.nuget\\packages\\": {},
+    "C:\\Users\\Alessio\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackendNuovo\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
+      "projectUniqueName": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
       "projectName": "RobertDoisneau.WebApi.GalleryAPI",
-      "projectPath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackendNuovo\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
-      "packagesPath": "C:\\Users\\Ludovico\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Ludovico\\Desktop\\RobertDoisneauBackendNuovo\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\obj\\",
+      "projectPath": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
+      "packagesPath": "C:\\Users\\Alessio\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Ludovico\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Alessio\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -574,7 +574,6 @@
       },
       "frameworks": {
         "net10.0": {
-          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {}
         }
@@ -593,7 +592,6 @@
     },
     "frameworks": {
       "net10.0": {
-        "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
           "Dapper": {
@@ -640,7 +638,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
