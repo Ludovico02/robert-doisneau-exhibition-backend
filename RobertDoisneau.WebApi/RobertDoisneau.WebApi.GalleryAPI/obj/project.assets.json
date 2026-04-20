@@ -545,23 +545,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Alessio\\.nuget\\packages\\": {},
+    "C:\\Users\\PC-31\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
+      "projectUniqueName": "C:\\Users\\PC-31\\Desktop\\Project Work\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
       "projectName": "RobertDoisneau.WebApi.GalleryAPI",
-      "projectPath": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
-      "packagesPath": "C:\\Users\\Alessio\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Alessio\\Desktop\\Project Work 1 Anno\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\obj\\",
+      "projectPath": "C:\\Users\\PC-31\\Desktop\\Project Work\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\RobertDoisneau.WebApi.GalleryAPI.csproj",
+      "packagesPath": "C:\\Users\\PC-31\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\PC-31\\Desktop\\Project Work\\RobertDoisneauBackEnd\\RobertDoisneau.WebApi\\RobertDoisneau.WebApi.GalleryAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\Alessio\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\PC-31\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -574,6 +574,7 @@
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {}
         }
@@ -592,6 +593,7 @@
     },
     "frameworks": {
       "net10.0": {
+        "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
           "Dapper": {
@@ -638,7 +640,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.AspNetCore": "(,10.0.32767]",
           "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
@@ -1061,7 +1063,7 @@
       "code": "NU1510",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "PackageReference Microsoft.Extensions.Configuration.Json will not be pruned. Consider removing this package from your dependencies, as it is likely unnecessary.",
+      "message": "Microsoft.Extensions.Configuration.Json PackageReference non verrà rimosso. È consigliabile rimuovere questo pacchetto dalle dipendenze, poiché è probabile che non sia necessario.",
       "libraryId": "Microsoft.Extensions.Configuration.Json",
       "targetGraphs": [
         "net10.0"
