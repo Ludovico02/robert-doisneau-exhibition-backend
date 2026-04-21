@@ -40,7 +40,6 @@ public class UserService
         using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
 
-        // Filtriamo direttamente nel database tramite la clausola WHERE
         const string query = """
         SELECT 
             id, 
@@ -66,7 +65,6 @@ public class UserService
             VALUES(@Username, @PasswordHash, @Email, @CreatedAt)
             RETURNING id;
             """;
-
 
         int newId = await connection.QuerySingleAsync<int>(query, newUser);
         newUser.Id = newId;

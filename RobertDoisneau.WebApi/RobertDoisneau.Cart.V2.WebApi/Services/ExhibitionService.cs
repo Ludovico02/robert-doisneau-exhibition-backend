@@ -19,6 +19,7 @@ public class ExhibitionService
     {
         using NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
+
         string selectionQuery = """
             SELECT 
             id as Id,

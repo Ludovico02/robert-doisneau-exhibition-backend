@@ -19,9 +19,9 @@ public static class AuthEndpoints
             context.Response.Cookies.Delete("X-Access-Token", new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true, // Deve essere uguale a come lo hai creato
-                SameSite = SameSiteMode.None, // Deve essere uguale a come lo hai creato
-                Path = "/" // <--- QUESTO È IL PUNTO CRITICO: deve corrispondere al path di creazione
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Path = "/"
             });
             return Results.Ok(new { message = "Logged out successfully" });
         });
@@ -42,10 +42,10 @@ public static class AuthEndpoints
         // Configurazione del cookie
         var cookieOptions = new CookieOptions
         {
-            HttpOnly = true,         // Protegge da XSS (JavaScript non può leggerlo)
-            Secure = true,           // Viaggia solo su HTTPS
-            SameSite = SameSiteMode.None, // Protegge da CSRF
-            Expires = DateTime.UtcNow.AddMinutes(30) // Durata del cookie
+            HttpOnly = true,
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            Expires = DateTime.UtcNow.AddMinutes(30)
         };
 
         httpContext.Response.Cookies.Append("X-Access-Token", token, cookieOptions);

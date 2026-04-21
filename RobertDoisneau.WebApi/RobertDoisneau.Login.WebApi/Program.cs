@@ -10,16 +10,13 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("PermettiTutto", policy =>
     {
-        // Cambiare l'allow any origin con il link del frontend
         policy.WithOrigins("http://127.0.0.1:5500")
-              .AllowAnyMethod()   // Accetta POST, GET, ecc.
-              .AllowAnyHeader()   // Accetta qualsiasi tipo di dato (JSON)
-              .AllowCredentials(); // Permette l'invio di cookie (necessario per l'autenticazione)
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
     });
 });
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<UserService>();
@@ -52,7 +49,6 @@ var app = builder.Build();
 
 app.UseCors("PermettiTutto");
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

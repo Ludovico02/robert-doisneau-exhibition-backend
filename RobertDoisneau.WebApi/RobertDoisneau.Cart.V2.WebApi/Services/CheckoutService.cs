@@ -26,8 +26,6 @@ public class CheckoutService
         {
             foreach (var item in items)
             {
-                // 1. Controllo disponibilità con blocco della riga (FOR UPDATE)
-                // Usiamo l'alias "AS ExhibitionId" e il parametro @CategoryId
                 var checkSql = @"
                     SELECT id AS ExhibitionId, availability, price 
                     FROM exhibitions
@@ -42,7 +40,6 @@ public class CheckoutService
                     throw new Exception($"Posti esauriti o categoria non trovata per l'ID: {item.TicketCategoryId}.");
                 }
 
-                // 2. Aggiornamento della disponibilità
                 var updateSql = """
                     UPDATE exhibitions 
                     SET availability = availability - @Quantity 
@@ -54,7 +51,6 @@ public class CheckoutService
                     new { Quantity = item.Quantity, CategoryId = categoryInfo.ExhibitionId },
                     transaction);
 
-                // 3. Preparazione dei biglietti da inserire
                 var ticketsToInsert = new List<PurchasedTicket>();
 
                 for (int i = 0; i < item.Quantity; i++)
@@ -62,14 +58,13 @@ public class CheckoutService
                     ticketsToInsert.Add(new PurchasedTicket
                     {
                         UserId = userId,
-                        ExhibitionId = categoryInfo.ExhibitionId, // NUOVO: Collegamento con la tabella exhibitions
+                        ExhibitionId = categoryInfo.ExhibitionId,
                         UniqueCode = Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper(),
                         PricePaid = categoryInfo.Price,
                         PurchaseDate = DateTime.UtcNow
                     });
                 }
 
-                // 4. Inserimento nel database (inclusa la colonna exhibition_id)
                 var insertSql = @"
                     INSERT INTO purchased_tickets (user_id, exhibition_id, unique_code, price_paid, purchase_date) 
                     VALUES (@UserId, @ExhibitionId, @UniqueCode, @PricePaid, @PurchaseDate);";
@@ -77,16 +72,13 @@ public class CheckoutService
                 await connection.ExecuteAsync(insertSql, ticketsToInsert, transaction);
             }
 
-            // Se tutto il ciclo finisce senza errori, confermiamo la transazione
             await transaction.CommitAsync();
             return true;
         }
         catch (Exception ex)
         {
-            // In caso di errore annulla tutte le query precedenti per evitare dati parziali
             await transaction.RollbackAsync();
 
-            // Logghiamo l'errore reale invece di fare solo Console.WriteLine
             _logger.LogError(ex, "Errore durante la transazione di checkout per l'utente {UserId}", userId);
 
             return false;
@@ -94,7 +86,6 @@ public class CheckoutService
     }
 }
 
-// Classe di supporto per mappare i dati in lettura
 public class CategoryCheckInfo
 {
     public int ExhibitionId { get; set; }
