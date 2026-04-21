@@ -10,7 +10,8 @@ public static class AuthEndpoints
     {
         var group = route.MapGroup("/api/auth");
 
-        group.MapPost("/login", LoginAsync);
+        group.MapPost("/login", LoginAsync)
+            .RequireRateLimiting("LoginRateLimit");
 
         group.MapPost("/register", RegisterAsync);
 

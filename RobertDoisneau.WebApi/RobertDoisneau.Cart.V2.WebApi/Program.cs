@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using RobertDoisneau.Cart.V2.WebApi.Endpoints;
 using RobertDoisneau.Cart.V2.WebApi.Services;
 using System.Text;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
 
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
