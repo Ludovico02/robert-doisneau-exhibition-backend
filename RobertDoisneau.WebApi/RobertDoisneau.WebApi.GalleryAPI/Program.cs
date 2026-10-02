@@ -8,6 +8,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+                     ?? new[] { "http://127.0.0.1:5500", "http://localhost:5500" };
+
 //SERVIZIO PER LIMITARE LE RICHIESTE (RATE LIMITER)
 builder.Services.AddRateLimiter(options =>
 {
@@ -24,26 +27,22 @@ builder.Services.AddRateLimiter(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.WithOrigins("http://127.0.0.1:5500")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
+    options.AddPolicy("Frontend", policy => policy
+        .WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 });
 
-var jwtKey = builder.Configuration.GetValue<string>("Jwt:Key");
-if (string.IsNullOrWhiteSpace(jwtKey))
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
 {
-    throw new InvalidOperationException("Configuration value 'Jwt:Key' is missing in appsettings.json.");
+    throw new InvalidOperationException(
+        "Configuration value 'Jwt:Key' is missing or shorter than 32 characters. Run scripts/setup-dev.ps1 (or .sh).");
 }
 
 // Token JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.IncludeErrorDetails = true;
+        options.IncludeErrorDetails = builder.Environment.IsDevelopment();
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -73,10 +72,8 @@ builder.Services.AddScoped<IPhotoService, PhotoService>();
 
 var app = builder.Build();
 
-app.UseCors("AllowAll");
-
+app.UseCors("Frontend");
 app.UseRateLimiter();
-app.UseCors("PermettiTutto");
 
 if (app.Environment.IsDevelopment())
 {
@@ -99,4 +96,3 @@ app.MapGet("/", () =>
 app.MapPhotoEndpoints();
 
 app.Run();
-

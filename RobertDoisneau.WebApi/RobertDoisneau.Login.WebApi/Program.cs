@@ -7,15 +7,13 @@ using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
+                     ?? new[] { "http://127.0.0.1:5500", "http://localhost:5500" };
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PermettiTutto", policy =>
-    {
-        policy.WithOrigins("http://127.0.0.1:5500")
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
-    });
+    options.AddPolicy("Frontend", policy => policy
+        .WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
 });
 
 builder.Services.AddRateLimiter(options =>
@@ -43,10 +41,11 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<JWTService>();
 
 //JWT Authentication
-var jwtKey = builder.Configuration.GetValue<string>("Jwt:Key");
-if (string.IsNullOrWhiteSpace(jwtKey))
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrWhiteSpace(jwtKey) || jwtKey.Length < 32)
 {
-    throw new InvalidOperationException("Configuration value 'Jwt:Key' is missing or empty. Set it in appsettings or environment variables.");
+    throw new InvalidOperationException(
+        "Configuration value 'Jwt:Key' is missing or shorter than 32 characters. Run scripts/setup-dev.ps1 (or .sh).");
 }
 
 // Token JWT
@@ -67,7 +66,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-app.UseCors("PermettiTutto");
+app.UseCors("Frontend");
 
 app.UseRateLimiter();
 
@@ -88,4 +87,3 @@ app.UseAuthentication();
 app.MapAuthEndpoints();
 
 app.Run();
-
