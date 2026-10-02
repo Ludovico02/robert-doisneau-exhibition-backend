@@ -1,6 +1,7 @@
 ﻿namespace RobertDoisneau.WebApi.GalleryAPI.EndPoints;
 
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.RateLimiting;
 using RobertDoisneau.WebApi.GalleryAPI.Models;
 using RobertDoisneau.WebApi.GalleryAPI.Services;
 public static class PhotoEndPoints
@@ -10,7 +11,8 @@ public static class PhotoEndPoints
 
         var group = route.MapGroup("/api/gallery")
             .WithTags("Gallery")
-            .RequireAuthorization();
+            .RequireAuthorization()
+            .RequireRateLimiting("fixed-policy");
 
 
         group.MapGet("", GetGalleryAsync)

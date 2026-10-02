@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using RobertDoisneau.WebApi.GalleryAPI.EndPoints;
 using RobertDoisneau.WebApi.GalleryAPI.Services;
 using System.Text;
+using System.Threading.RateLimiting;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,14 +15,17 @@ var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get
 //SERVIZIO PER LIMITARE LE RICHIESTE (RATE LIMITER)
 builder.Services.AddRateLimiter(options =>
 {
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests; 
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
-    options.AddFixedWindowLimiter("fixed-policy", opt =>
-    {
-        opt.Window = TimeSpan.FromSeconds(10); 
-        opt.PermitLimit = 5; 
-        opt.QueueLimit = 0; 
-    });
+    options.AddPolicy("fixed-policy", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 60,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
 });
 
 
