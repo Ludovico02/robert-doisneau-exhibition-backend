@@ -1,6 +1,0 @@
-@RobertDoisneau.Login.WebApi_HostAddress = http://localhost:5027
-
-GET {{RobertDoisneau.Login.WebApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

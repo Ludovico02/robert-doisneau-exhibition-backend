@@ -1,10 +1,10 @@
-# Visual Studio temporanei
 .vs/
-[Dd]ebug/
-[Rr]elease/
 bin/
 obj/
-
-# File utente
-*.suo
 *.user
+*.suo
+.env
+TestResults/
+.idea/
+.vscode/
+*.log
