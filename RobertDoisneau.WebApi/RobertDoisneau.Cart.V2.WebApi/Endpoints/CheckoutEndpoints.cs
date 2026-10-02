@@ -20,23 +20,21 @@ public static class CheckoutEndpoints
 
         if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
         {
-            // Console.WriteLine(string.IsNullOrEmpty(userIdString));
             return Results.Unauthorized();
         }
 
-        if (request == null || request.Items == null || !request.Items.Any())
+        if (!CheckoutRules.TryNormalize(request?.Items, out var items, out var error))
+            return Results.BadRequest(new { message = error });
+
+        var result = await checkoutService.ProcessPurchaseAsync(userId, items);
+
+        return result switch
         {
-            return Results.BadRequest(new { message = "Il carrello è vuoto o la richiesta non è valida." });
-        }
-
-        var success = await checkoutService.ProcessPurchaseAsync(userId, request.Items);
-
-        if (!success)
-        {
-            return Results.Conflict(new { message = "Ci dispiace, i biglietti richiesti sono esauriti o non più disponibili." });
-        }
-
-        return Results.Ok(new { message = "Acquisto completato con successo! I tuoi biglietti sono stati generati." });
+            PurchaseResult.Success => Results.Ok(new { message = "Purchase completed successfully. Your tickets have been generated." }),
+            PurchaseResult.SoldOut => Results.Conflict(new { message = "Sorry, the requested tickets are sold out or no longer available." }),
+            PurchaseResult.NotFound => Results.NotFound(new { message = "One of the requested exhibitions does not exist." }),
+            PurchaseResult.InvalidRequest => Results.BadRequest(new { message = "The request is not valid." }),
+            _ => Results.Problem("An unexpected error occurred while processing the purchase.", statusCode: StatusCodes.Status500InternalServerError)
+        };
     }
 }
-

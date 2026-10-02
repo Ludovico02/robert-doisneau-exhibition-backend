@@ -1,92 +1,125 @@
-﻿using Dapper;
+using Dapper;
 using Npgsql;
 using RobertDoisneau.Cart.V2.WebApi.Models;
+using System.Security.Cryptography;
 
 namespace RobertDoisneau.Cart.V2.WebApi.Services;
 
 public class CheckoutService
 {
+    private const string LockExhibitionSql = """
+        SELECT id AS ExhibitionId, availability, price
+        FROM public.exhibitions
+        WHERE id = @ExhibitionId
+        FOR UPDATE;
+        """;
+
+    private const string DecrementStockSql = """
+        UPDATE public.exhibitions
+        SET availability = availability - @Quantity
+        WHERE id = @ExhibitionId AND availability >= @Quantity;
+        """;
+
+    private const string InsertTicketSql = """
+        INSERT INTO public.purchased_tickets (user_id, exhibition_id, unique_code, price_paid, purchase_date)
+        VALUES (@UserId, @ExhibitionId, @UniqueCode, @PricePaid, @PurchaseDate);
+        """;
+
     private readonly string _connectionString;
     private readonly ILogger<CheckoutService> _logger;
 
     public CheckoutService(IConfiguration configuration, ILogger<CheckoutService> logger)
     {
-        _connectionString = configuration.GetConnectionString("db") ?? throw new Exception("db null");
+        _connectionString = configuration.GetConnectionString("db")
+            ?? throw new InvalidOperationException("Connection string 'db' is missing.");
         _logger = logger;
     }
 
-    public async Task<bool> ProcessPurchaseAsync(int userId, List<CheckoutItem> items)
+    public async Task<PurchaseResult> ProcessPurchaseAsync(int userId, IEnumerable<CheckoutItem>? items)
     {
-        using var connection = new NpgsqlConnection(_connectionString);
-        await connection.OpenAsync();
+        if (!CheckoutRules.TryNormalize(items, out var order, out _))
+            return PurchaseResult.InvalidRequest;
 
-        using var transaction = await connection.BeginTransactionAsync();
+        await using var connection = new NpgsqlConnection(_connectionString);
+        NpgsqlTransaction? transaction = null;
 
         try
         {
-            foreach (var item in items)
+            await connection.OpenAsync();
+            transaction = await connection.BeginTransactionAsync();
+
+            foreach (var item in order)
             {
-                var checkSql = @"
-                    SELECT id AS ExhibitionId, availability, price 
-                    FROM exhibitions
-                    WHERE id = @CategoryId
-                    FOR UPDATE;";
+                var stock = await connection.QuerySingleOrDefaultAsync<ExhibitionStock>(
+                    LockExhibitionSql, new { ExhibitionId = item.TicketCategoryId }, transaction);
 
-                var categoryInfo = await connection.QuerySingleOrDefaultAsync<CategoryCheckInfo>(
-                                checkSql, new { CategoryId = item.TicketCategoryId }, transaction);
-
-                if (categoryInfo == null || categoryInfo.Availability < item.Quantity)
+                if (stock is null)
                 {
-                    throw new Exception($"Posti esauriti o categoria non trovata per l'ID: {item.TicketCategoryId}.");
+                    await transaction.RollbackAsync();
+                    return PurchaseResult.NotFound;
                 }
 
-                var updateSql = """
-                    UPDATE exhibitions 
-                    SET availability = availability - @Quantity 
-                    WHERE id = @CategoryId;
-                    """;
-
-                await connection.ExecuteAsync(
-                    updateSql,
-                    new { Quantity = item.Quantity, CategoryId = categoryInfo.ExhibitionId },
-                    transaction);
-
-                var ticketsToInsert = new List<PurchasedTicket>();
-
-                for (int i = 0; i < item.Quantity; i++)
+                if (stock.Availability < item.Quantity)
                 {
-                    ticketsToInsert.Add(new PurchasedTicket
+                    await transaction.RollbackAsync();
+                    return PurchaseResult.SoldOut;
+                }
+
+                var updatedRows = await connection.ExecuteAsync(
+                    DecrementStockSql,
+                    new { item.Quantity, ExhibitionId = stock.ExhibitionId },
+                    transaction);
+                if (updatedRows != 1)
+                {
+                    throw new InvalidOperationException(
+                        $"Stock update affected {updatedRows} rows for exhibition {stock.ExhibitionId}.");
+                }
+
+                var tickets = new List<PurchasedTicket>(item.Quantity);
+                for (var i = 0; i < item.Quantity; i++)
+                {
+                    tickets.Add(new PurchasedTicket
                     {
                         UserId = userId,
-                        ExhibitionId = categoryInfo.ExhibitionId,
-                        UniqueCode = Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper(),
-                        PricePaid = categoryInfo.Price,
+                        ExhibitionId = stock.ExhibitionId,
+                        UniqueCode = Convert.ToHexString(RandomNumberGenerator.GetBytes(5)),
+                        PricePaid = stock.Price,
                         PurchaseDate = DateTime.UtcNow
                     });
                 }
 
-                var insertSql = @"
-                    INSERT INTO purchased_tickets (user_id, exhibition_id, unique_code, price_paid, purchase_date) 
-                    VALUES (@UserId, @ExhibitionId, @UniqueCode, @PricePaid, @PurchaseDate);";
-
-                await connection.ExecuteAsync(insertSql, ticketsToInsert, transaction);
+                await connection.ExecuteAsync(InsertTicketSql, tickets, transaction);
             }
 
             await transaction.CommitAsync();
-            return true;
+            return PurchaseResult.Success;
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync();
+            _logger.LogError(ex, "Checkout transaction failed for user {UserId}", userId);
+            if (transaction is not null)
+            {
+                try
+                {
+                    await transaction.RollbackAsync();
+                }
+                catch (Exception rollbackEx)
+                {
+                    _logger.LogWarning(rollbackEx, "Rollback failed for user {UserId}", userId);
+                }
+            }
 
-            _logger.LogError(ex, "Errore durante la transazione di checkout per l'utente {UserId}", userId);
-
-            return false;
+            return PurchaseResult.Error;
+        }
+        finally
+        {
+            if (transaction is not null)
+                await transaction.DisposeAsync();
         }
     }
 }
 
-public class CategoryCheckInfo
+public class ExhibitionStock
 {
     public int ExhibitionId { get; set; }
     public int Availability { get; set; }

@@ -7,20 +7,14 @@ public static class UsersEndpoints
 {
     public static void MapUsersEndpoints(this IEndpointRouteBuilder route)
     {
-        var group = route.MapGroup("/api/tickets").WithTags("Tickets");
+        var group = route.MapGroup("/api/tickets").WithTags("Tickets").RequireAuthorization();
 
         group.MapGet("/my-tickets", GetTicketsAsync);
     }
 
     public static async Task<IResult> GetTicketsAsync(HttpContext httpContext, TicketService ticketService)
     {
-        // ID dell'utente loggato preso dal Token JWT
         var userIdString = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-        //foreach (var claim in httpContext.User.Claims)
-        //{
-        //    Console.WriteLine($"Type: {claim.Type} - Value: {claim.Value}");
-        //}
 
         if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
         {

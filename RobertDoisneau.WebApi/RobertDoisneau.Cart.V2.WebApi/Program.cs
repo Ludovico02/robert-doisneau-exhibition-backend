@@ -3,7 +3,6 @@ using Microsoft.IdentityModel.Tokens;
 using RobertDoisneau.Cart.V2.WebApi.Endpoints;
 using RobertDoisneau.Cart.V2.WebApi.Services;
 using System.Text;
-using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,7 +49,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             OnMessageReceived = context =>
             {
-                context.Token = context.Request.Cookies["X-Access-Token"];
+                var cookie = context.Request.Cookies["X-Access-Token"];
+                if (!string.IsNullOrEmpty(cookie)) context.Token = cookie;
                 return Task.CompletedTask;
             }
         };
