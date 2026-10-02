@@ -1,26 +1,22 @@
 services:
-  its-postgres:
-    image: postgres:latest
-    container_name: its_postgres
+  db:
+    image: postgres:16
+    container_name: doisneau-db
     environment:
+      POSTGRES_DB: DBDoisneau
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: REDACTED
-      POSTGRES_DB: my_database
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-REDACTED}
     ports:
-      - "5433:5432"
+      - "127.0.0.1:5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql
-
-  its-pgadmin:
-    image: dpage/pgadmin4
-    container_name: its_pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: REDACTED
-    ports:
-      - "8088:80"
-    depends_on:
-      - its-postgres
+      - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./db/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
-  postgres_data:
+  pgdata:
