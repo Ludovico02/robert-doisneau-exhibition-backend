@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Microsoft.VisualBasic;
 using Npgsql;
 using RobertDoisneau.Login.WebApi.Models;
 
@@ -35,23 +34,18 @@ public class UserService
         return await connection.QuerySingleOrDefaultAsync<User>(query, new { Username = username });
     }
 
-    public async Task<User?> GetByEmailAsync(string username)
+    public async Task<User?> GetByEmailAsync(string email)
     {
         using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
 
         const string query = """
-        SELECT 
-            id, 
-            username, 
-            password_hash as PasswordHash, 
-            email, 
-            created_at as CreatedAt
+        SELECT id, username, password_hash AS PasswordHash, email, created_at AS CreatedAt
         FROM public.users
-        WHERE email = @Email;
+        WHERE lower(email) = lower(@Email);
         """;
 
-        return await connection.QuerySingleOrDefaultAsync<User>(query, new { Username = username });
+        return await connection.QuerySingleOrDefaultAsync<User>(query, new { Email = email });
     }
 
     public async Task AddUserAsync(User newUser)
