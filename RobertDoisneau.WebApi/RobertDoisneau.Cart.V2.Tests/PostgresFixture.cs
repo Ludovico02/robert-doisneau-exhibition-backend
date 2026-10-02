@@ -7,8 +7,7 @@ namespace RobertDoisneau.Cart.V2.Tests;
 
 public sealed class PostgresFixture : IAsyncLifetime
 {
-    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder()
-        .WithImage("postgres:16")
+    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder("postgres:16")
         .Build();
 
     public string ConnectionString => _container.GetConnectionString();
