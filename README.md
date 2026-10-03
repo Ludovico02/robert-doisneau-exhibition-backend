@@ -1,13 +1,19 @@
 # Robert Doisneau Museum Backend
 
+[![CI](https://github.com/Ludovico02/robert-doisneau-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/Ludovico02/robert-doisneau-backend/actions/workflows/ci.yml)
+
 Robert Doisneau is a museum website backend built with .NET 10 minimal APIs, PostgreSQL, Dapper, and JWT authentication in an HttpOnly cookie. It provides account registration and login, exhibition browsing and ticket purchases, access to purchased tickets, and a photo gallery API.
 
-## My contributions
+## Highlights
 
 - **Security layer:** Login and registration protections include BCrypt password hashing, input limits, timing-equalized login verification, and per-IP rate limiting.
 - **HttpOnly cookie JWTs:** Authentication tokens are attached as `HttpOnly`, `Secure` cookies rather than exposed to browser JavaScript or stored in local storage.
-- **Concurrency-safe checkout:** Purchase processing uses PostgreSQL transactions and `SELECT ... FOR UPDATE` row locks (acquired in sorted exhibition-ID order) to prevent concurrent purchases from overselling ticket stock.
+- **Concurrency-safe checkout:** Purchases run in one database transaction, lock exhibition rows with `SELECT ... FOR UPDATE` in sorted exhibition-ID order, and roll back as a unit if any requested item cannot be fulfilled, preventing concurrent purchases from overselling ticket stock.
+- **Server-side pricing and stock constraints:** The price comes from PostgreSQL, not the client. Database `CHECK` constraints guard capacity, availability, and non-negative prices.
 - **Purchased-ticket access:** Authenticated users can retrieve tickets associated with their account.
+- **Password protection:** Registration rejects passwords above BCrypt's 72-byte limit, and login performs a dummy hash verification for unknown usernames to reduce timing-based username enumeration.
+- **Rate limiting:** Login and registration have per-IP limits; gallery requests are also limited per IP.
+- **Parameterized SQL:** Dapper queries pass user-provided values as parameters.
 
 ## Architecture
 
@@ -21,26 +27,17 @@ Login and Cart intentionally share the `DBDoisneau` database. Purchased tickets 
 
 ## Team and contributions
 
-Contribution areas were reviewed against Git history and confirmed by the project owner.
-
 - **Ludovico** — Login API, including registration, BCrypt password hashing, JWT authentication in an HttpOnly cookie, logout, and login rate limiting; Cart checkout and purchased-ticket access; security layer; frontend registration, cart, and purchased-ticket pages.
 - **Alessio Mondini** — Gallery API, exhibitions listing in the Cart API, Docker/database setup, and frontend gallery and ticket-shop pages.
 - **Francesco and Daniele** — the remaining frontend work.
 
 The frontend repository is private and is not linked here.
 
-## Interesting parts
-
-- **Concurrency-safe checkout:** purchases run in one database transaction, lock exhibition rows with `SELECT ... FOR UPDATE`, acquire locks in sorted exhibition-ID order, and roll back as a unit if any requested item cannot be fulfilled.
-- **Server-side pricing and stock constraints:** the price comes from PostgreSQL, not the client. Database `CHECK` constraints provide a final guard on capacity, availability, and non-negative prices.
-- **Cookie-based JWT authentication:** tokens are stored in an HttpOnly cookie rather than browser local storage, reducing exposure to JavaScript-based token theft.
-- **Password protection:** passwords are hashed with BCrypt, registration rejects values above BCrypt's 72-byte limit, and login performs a dummy hash verification for unknown usernames to reduce timing-based username enumeration.
-- **Rate limiting:** login and registration have per-IP limits; gallery requests are limited per IP.
-- **Parameterized SQL:** Dapper queries pass user-provided values as parameters.
-
 ## Run it locally
 
 Requirements: .NET 10 SDK and Docker Desktop.
+
+The companion frontend (not included in this repository) calls `https://localhost:7198`, `https://localhost:7224`, and `https://localhost:7164`, and is served from `http://127.0.0.1:5500` (for example, with VS Code Live Server). Run `dotnet dev-certs https --trust` once; otherwise, the browser will block the requests.
 
 1. Start PostgreSQL from the repository root:
 
@@ -82,9 +79,9 @@ Run the Login API integration tests:
 dotnet test RobertDoisneau.WebApi/RobertDoisneau.Login.WebApi.Tests/RobertDoisneau.Login.WebApi.Tests.csproj
 ```
 
-The test host runs in memory through `WebApplicationFactory`; the tests use a disposable PostgreSQL container, so Docker must be running. The suite covers successful registration and verifies that successful login returns an `HttpOnly` `X-Access-Token` cookie.
+The test host runs in memory through `WebApplicationFactory`; the tests use a disposable PostgreSQL container, so Docker must be running. The Login tests cover successful registration and login, the `HttpOnly` cookie flag, wrong passwords, duplicate usernames and emails, validation errors, and login rate limiting.
 
-Run the existing full solution test suite:
+Run the full test suite:
 
 ```sh
 dotnet test RobertDoisneau.WebApi/RobertDoisneau.WebApi.slnx
@@ -101,6 +98,7 @@ Cart tests include unit coverage for request normalization and PostgreSQL integr
 - All three services share a symmetric JWT signing key.
 - There are no refresh tokens, payment integration, or per-user ticket purchase caps.
 - Login and Cart intentionally share one database.
+- Registration returns distinct "username already in use" and "email already exists" messages, allowing account enumeration. This is a deliberate UX trade-off; login uses identical 401 responses and a dummy hash check.
 
 ## Production considerations
 
