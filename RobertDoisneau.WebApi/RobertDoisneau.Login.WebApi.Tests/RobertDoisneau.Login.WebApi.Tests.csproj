@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RobertDoisneau.Login.WebApi\RobertDoisneau.Login.WebApi.csproj" />
+    <Content Include="..\..\db\schema.sql" Link="db\schema.sql" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

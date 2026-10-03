@@ -197,20 +197,10 @@ public sealed class LoginPostgresFixture : IAsyncLifetime
     {
         await _container.StartAsync();
 
+        var schema = await File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "db", "schema.sql"));
         await using var connection = new NpgsqlConnection(ConnectionString);
         await connection.OpenAsync();
-        await using var command = new NpgsqlCommand(
-            """
-            CREATE TABLE public.users
-            (
-                id SERIAL PRIMARY KEY,
-                username VARCHAR(50) NOT NULL UNIQUE,
-                password_hash TEXT NOT NULL,
-                email VARCHAR(100) NOT NULL UNIQUE,
-                created_at TIMESTAMPTZ NOT NULL
-            );
-            """,
-            connection);
+        await using var command = new NpgsqlCommand(schema, connection);
         await command.ExecuteNonQueryAsync();
     }
 
