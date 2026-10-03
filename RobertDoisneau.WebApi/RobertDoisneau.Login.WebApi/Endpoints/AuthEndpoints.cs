@@ -45,6 +45,11 @@ public static class AuthEndpoints
             return Results.BadRequest(new { error = "Username and password are required." });
         }
 
+        if (Encoding.UTF8.GetByteCount(request.Password) > MaxPasswordBytes)
+        {
+            return Results.BadRequest(new { error = $"The password is too long (maximum {MaxPasswordBytes} bytes)." });
+        }
+
         var user = await userService.GetByUsernameAsync(request.Username.Trim());
         var passwordOk = BCrypt.Net.BCrypt.Verify(request.Password, user?.PasswordHash ?? DummyHash);
         if (user is null || !passwordOk)
