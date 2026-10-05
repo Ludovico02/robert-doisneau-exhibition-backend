@@ -4,6 +4,7 @@ obj/
 *.user
 *.suo
 .env
+**/appsettings.*.json
 TestResults/
 .idea/
 .vscode/
