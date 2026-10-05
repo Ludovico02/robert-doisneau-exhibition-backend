@@ -28,7 +28,7 @@ Login and Cart share the `DBDoisneau` database, because tickets reference users 
 
 **Input validation.** Usernames are alphanumeric (3–50 characters), emails are parsed and normalized, and the cart is validated (positive IDs, quantity 1–10 per exhibition, at most 20 exhibitions per order, duplicate lines merged). Unique-constraint races at registration are caught and returned as `409`.
 
-**Other.** All SQL is parameterized. Ticket codes come from a cryptographic RNG. Secrets live in .NET user-secrets, not in committed config, and the services refuse to start with a missing or short (<32 characters) JWT key.
+**Other.** All SQL is parameterized. Ticket codes come from a cryptographic RNG. Secrets live in .NET user-secrets, not in committed config (and CI scans for leaked secrets), and the services refuse to start with a missing or short (<32 characters) JWT key.
 
 ## Verification
 
@@ -38,7 +38,7 @@ Checked on a fresh clone (October 2026):
 | --- | --- |
 | Setup script on a fresh clone | Succeeded for all three APIs |
 | Release build | 0 errors |
-| Test suite (`dotnet test`) | 16 passed, 0 failed, 0 skipped |
+| Test suite (`dotnet test`, Release) | All passing, 0 failed, 0 skipped |
 | GitHub Actions (build + test) | Green |
 | Live endpoint run via `curl` (register, login, logout, exhibitions, purchase, my-tickets, gallery) | All returned `200 OK` |
 | Login cookie flags | `Secure`, `HttpOnly`, `SameSite=None` |
@@ -46,7 +46,7 @@ Checked on a fresh clone (October 2026):
 
 ## Run it locally
 
-Requirements: .NET 10 SDK and Docker. The companion frontend is a separate private repository (see below); the APIs can be exercised on their own with `curl` or Swagger.
+Requirements: .NET 10 SDK and Docker. The companion frontend is a separate private repository (see below); the APIs can be exercised on their own through Swagger UI or `curl`.
 
 1. **Start PostgreSQL** from the repository root:
 
@@ -111,7 +111,7 @@ Docker must be running: the integration tests start a disposable PostgreSQL cont
 - **Login API** (integration, via `WebApplicationFactory`): registration and login success, the `HttpOnly` cookie flag, wrong password, duplicate username and email, validation errors, login rate limiting.
 - **Cart API**: unit tests for cart normalization and PostgreSQL integration tests for the checkout transaction.
 
-CI (`.github/workflows/ci.yml`) builds and tests the solution in Release on every push and pull request.
+CI (`.github/workflows/ci.yml`) runs a gitleaks secret scan over the full history, then builds and tests the solution in Release, on every push and pull request.
 
 ## Known limitations
 
@@ -132,6 +132,6 @@ This started as a team project during my ITS course:
 - **Alessio Mondini:** Gallery API, the exhibitions listing, the first Docker/database setup, and the gallery and ticket-shop pages.
 - **Francesco and Daniele:** the remaining frontend work.
 
-After the course I hardened the project with the help of an AI coding assistant (GitHub Copilot), working from a prompt I wrote and reviewing the results: secrets moved to user-secrets, SQL schema and seed data, input validation, timing-safe login, deadlock-safe lock ordering in checkout, extra rate limiting, the test suites and the CI workflow. The commit history shows which changes were made at each stage.
+In the second year of course, after what I learnt after submitting the project, during my internship and with further self-studied material, I hardened the project with the help of an AI coding assistant (GitHub Copilot) to have a very quick way to polish what was previously done. I wrote a prompt and reviewed the results: secrets moved to user-secrets, SQL schema and seed data, input validation, timing-safe login, deadlock-safe lock ordering in checkout, extra rate limiting, the test suites and the CI workflow. The commit history shows which changes were made at each stage and where copilot came into play.
 
 The frontend repository is private and not linked here.

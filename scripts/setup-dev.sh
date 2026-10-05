@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 
-db_password=${1:-REDACTED}
+db_password=${1:-change-me}
 jwt_key=$(openssl rand -base64 48 | tr -d '\n')
 connection_string="Host=localhost;Port=5433;Database=DBDoisneau;Username=admin;Password=${db_password}"
 

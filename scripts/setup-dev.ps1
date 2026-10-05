@@ -1,5 +1,5 @@
-# Usage (repo root): .\scripts\setup-dev.ps1 -DbPassword "REDACTED"
-param([string]$DbPassword = "REDACTED")
+# Usage (repo root): .\scripts\setup-dev.ps1 -DbPassword "change-me"
+param([string]$DbPassword = "change-me")
 
 $ErrorActionPreference = "Stop"
 $projects = @(
