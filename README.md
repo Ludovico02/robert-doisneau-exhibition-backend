@@ -1,21 +1,12 @@
-# Robert Doisneau Museum Backend
+# Robert Doisneau Museum — Backend
 
-[![CI](https://github.com/Ludovico02/robert-doisneau-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/Ludovico02/robert-doisneau-backend/actions/workflows/ci.yml)
+[![CI](https://github.com/Ludovico02/robert-doisneau-exhibition-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/Ludovico02/robert-doisneau-exhibition-backend/actions/workflows/ci.yml)
 
-Robert Doisneau is a museum website backend built with .NET 10 minimal APIs, PostgreSQL, Dapper, and JWT authentication in an HttpOnly cookie. It provides account registration and login, exhibition browsing and ticket purchases, access to purchased tickets, and a photo gallery API.
+Backend for a museum website dedicated to the photographer Robert Doisneau: user accounts, exhibition browsing, ticket purchases and a photo gallery. Built with **.NET 10 minimal APIs**, **PostgreSQL**, **Dapper** and **JWT authentication stored in an HttpOnly cookie**, as three small services sharing one database.
 
-## Highlights
+Originally a team project from my ITS course; this repository is the hardened version, with a schema, tests and CI added (see [Project history](#project-history)).
 
-- **Security layer:** Login and registration protections include BCrypt password hashing, input limits, timing-equalized login verification, and per-IP rate limiting.
-- **HttpOnly cookie JWTs:** Authentication tokens are attached as `HttpOnly`, `Secure` cookies rather than exposed to browser JavaScript or stored in local storage.
-- **Concurrency-safe checkout:** Purchases run in one database transaction, lock exhibition rows with `SELECT ... FOR UPDATE` in sorted exhibition-ID order, and roll back as a unit if any requested item cannot be fulfilled, preventing concurrent purchases from overselling ticket stock.
-- **Server-side pricing and stock constraints:** The price comes from PostgreSQL, not the client. Database `CHECK` constraints guard capacity, availability, and non-negative prices.
-- **Purchased-ticket access:** Authenticated users can retrieve tickets associated with their account.
-- **Password protection:** Registration rejects passwords above BCrypt's 72-byte limit, and login performs a dummy hash verification for unknown usernames to reduce timing-based username enumeration.
-- **Rate limiting:** Login and registration have per-IP limits; gallery requests are also limited per IP.
-- **Parameterized SQL:** Dapper queries pass user-provided values as parameters.
-
-## Architecture
+## What it does
 
 | Service | HTTPS port | Routes |
 | --- | ---: | --- |
@@ -23,45 +14,61 @@ Robert Doisneau is a museum website backend built with .NET 10 minimal APIs, Pos
 | Cart API | 7224 | `GET /api/exhibitions`, `POST /api/checkout/buy`, `GET /api/tickets/my-tickets` |
 | Gallery API | 7164 | `GET /api/gallery`, `GET /api/gallery/{id}` |
 
-Login and Cart intentionally share the `DBDoisneau` database. Purchased tickets reference users through a foreign key. The Gallery API uses the same local PostgreSQL instance for gallery data.
+Login and Cart share the `DBDoisneau` database, because tickets reference users through a foreign key. The Gallery API uses the same PostgreSQL instance.
 
-## Team and contributions
+## Design highlights
 
-- **Ludovico** — Login API, including registration, BCrypt password hashing, JWT authentication in an HttpOnly cookie, logout, and login rate limiting; Cart checkout and purchased-ticket access; security layer; frontend registration, cart, and purchased-ticket pages.
-- **Alessio Mondini** — Gallery API, exhibitions listing in the Cart API, Docker/database setup, and frontend gallery and ticket-shop pages.
-- **Francesco and Daniele** — the remaining frontend work.
+**Checkout never oversells.** A purchase runs in a single transaction. Each exhibition row is locked with `SELECT ... FOR UPDATE`, and locks are always taken in ascending exhibition-ID order, so two carts containing the same exhibitions can't deadlock each other. If any item is sold out or missing, the whole order rolls back. The price always comes from the database, never from the client, and `CHECK` constraints on the table (`availability BETWEEN 0 AND total_capacity`, `price >= 0`) are a second line of defence behind the application logic.
 
-The frontend repository is private and is not linked here.
+**Authentication.**
+- Passwords are hashed with BCrypt. Registration rejects passwords over BCrypt's 72-byte input limit.
+- Login runs a dummy hash verification when the username doesn't exist, so response time doesn't reveal which usernames are registered. Wrong username and wrong password return the same `401`.
+- The JWT is set as an `HttpOnly`, `Secure` cookie, so browser JavaScript can't read it.
+- Login, registration and gallery routes are rate limited per IP.
+
+**Input validation.** Usernames are alphanumeric (3–50 characters), emails are parsed and normalized, and the cart is validated (positive IDs, quantity 1–10 per exhibition, at most 20 exhibitions per order, duplicate lines merged). Unique-constraint races at registration are caught and returned as `409`.
+
+**Other.** All SQL is parameterized. Ticket codes come from a cryptographic RNG. Secrets live in .NET user-secrets, not in committed config, and the services refuse to start with a missing or short (<32 characters) JWT key.
+
+## Verification
+
+Checked on a fresh clone (October 2026):
+
+| Check | Result |
+| --- | --- |
+| Setup script on a fresh clone | Succeeded for all three APIs |
+| Release build | 0 errors |
+| Test suite (`dotnet test`) | 16 passed, 0 failed, 0 skipped |
+| GitHub Actions (build + test) | Green |
+| Live endpoint run via `curl` (register, login, logout, exhibitions, purchase, my-tickets, gallery) | All returned `200 OK` |
+| Login cookie flags | `Secure`, `HttpOnly`, `SameSite=None` |
+| 20 simultaneous purchase requests against an exhibition with 5 seats left | 5 succeeded, 15 sold out, availability ended at 0, exactly 5 tickets issued |
 
 ## Run it locally
 
-Requirements: .NET 10 SDK and Docker Desktop.
+Requirements: .NET 10 SDK and Docker. The companion frontend is a separate private repository (see below); the APIs can be exercised on their own with `curl` or Swagger.
 
-The companion frontend (not included in this repository) calls `https://localhost:7198`, `https://localhost:7224`, and `https://localhost:7164`, and is served from `http://127.0.0.1:5500` (for example, with VS Code Live Server). Run `dotnet dev-certs https --trust` once; otherwise, the browser will block the requests.
+1. **Start PostgreSQL** from the repository root:
 
-1. Start PostgreSQL from the repository root:
-
-   ```powershell
+   ```sh
    docker compose up -d
    ```
 
-   Compose initializes the `DBDoisneau` database with `db/schema.sql` and `db/seed.sql`. By default, PostgreSQL uses the local development password `REDACTED`. To use a different password, set `DB_PASSWORD` in a local `.env` file based on `.env.example`, then use the same value in the next step.
+   Compose creates the `DBDoisneau` database from `db/schema.sql` and `db/seed.sql` and publishes it on `127.0.0.1:5433`. The default password is the development value `change-me`; to change it, copy `.env.example` to `.env` and set `DB_PASSWORD`.
 
-2. Configure local user-secrets for all three services. On Windows:
+   > If you get a name or port conflict (container `doisneau-db` or port 5433 already in use), stop the old container or change the host port in `docker-compose.yml` and in the connection strings.
+
+2. **Configure user-secrets** for all three services (database password and one JWT signing key shared by the services):
 
    ```powershell
-   .\scripts\setup-dev.ps1 -DbPassword "REDACTED"
+   .\scripts\setup-dev.ps1 -DbPassword "change-me"
    ```
-
-   On macOS or Linux:
 
    ```sh
-   ./scripts/setup-dev.sh "REDACTED"
+   ./scripts/setup-dev.sh "change-me"
    ```
 
-   Pass the same database password configured for Compose. The setup script generates one JWT signing key shared by all three services and stores both values in .NET user-secrets, not in committed configuration.
-
-3. Run each API from the repository root, in a separate terminal:
+3. **Run the APIs**, each in its own terminal:
 
    ```sh
    dotnet run --project RobertDoisneau.WebApi/RobertDoisneau.Login.WebApi/RobertDoisneau.Login.WebApi.csproj --launch-profile https
@@ -69,37 +76,62 @@ The companion frontend (not included in this repository) calls `https://localhos
    dotnet run --project RobertDoisneau.WebApi/RobertDoisneau.WebApi.GalleryAPI/RobertDoisneau.WebApi.GalleryAPI.csproj --launch-profile https
    ```
 
-The configured CORS origins are `http://127.0.0.1:5500` and `http://localhost:5500`; edit `Cors:AllowedOrigins` in each service's `appsettings.json` if your frontend uses a different origin. In Development, OpenAPI documents are available at `/openapi/v1.json` and Swagger UI at `/swagger`.
+   Run `dotnet dev-certs https --trust` once so browsers accept the local certificate. In Development, OpenAPI is served at `/openapi/v1.json` and Swagger UI at `/swagger`.
 
-## Tests
+CORS allows `http://127.0.0.1:5500` and `http://localhost:5500` by default (the frontend was served with VS Code Live Server). Change `Cors:AllowedOrigins` in each service's `appsettings.json` for another origin.
 
-Run the Login API integration tests:
+### Quick try with curl
 
 ```sh
-dotnet test RobertDoisneau.WebApi/RobertDoisneau.Login.WebApi.Tests/RobertDoisneau.Login.WebApi.Tests.csproj
+curl -k -c jar.txt -H "Content-Type: application/json" \
+  -d '{"username":"demo1","email":"demo1@example.com","password":"a-long-password"}' \
+  https://localhost:7198/api/auth/register
+
+curl -k -c jar.txt -H "Content-Type: application/json" \
+  -d '{"username":"demo1","password":"a-long-password"}' \
+  https://localhost:7198/api/auth/login
+
+curl -k https://localhost:7224/api/exhibitions
+curl -k -b jar.txt -H "Content-Type: application/json" \
+  -d '[{"ticketCategoryId":1,"quantity":2}]' \
+  https://localhost:7224/api/checkout/buy
+curl -k -b jar.txt https://localhost:7224/api/tickets/my-tickets
 ```
 
-The test host runs in memory through `WebApplicationFactory`; the tests use a disposable PostgreSQL container, so Docker must be running. The Login tests cover successful registration and login, the `HttpOnly` cookie flag, wrong passwords, duplicate usernames and emails, validation errors, and login rate limiting.
+(Field names are as defined in the request models; check Swagger if one differs.)
 
-Run the full test suite:
+## Tests
 
 ```sh
 dotnet test RobertDoisneau.WebApi/RobertDoisneau.WebApi.slnx
 ```
 
-Cart tests include unit coverage for request normalization and PostgreSQL integration tests using Testcontainers. Docker must be running for the integration tests.
+Docker must be running: the integration tests start a disposable PostgreSQL container with Testcontainers and apply the repository's `db/schema.sql`.
+
+- **Login API** (integration, via `WebApplicationFactory`): registration and login success, the `HttpOnly` cookie flag, wrong password, duplicate username and email, validation errors, login rate limiting.
+- **Cart API**: unit tests for cart normalization and PostgreSQL integration tests for the checkout transaction.
+
+CI (`.github/workflows/ci.yml`) builds and tests the solution in Release on every push and pull request.
 
 ## Known limitations
 
-- `SameSite=None` cookies require CSRF consideration. JSON-only endpoints and CORS preflight provide mitigation, but `Lax` or `Strict` would be preferable if the frontend and API shared a site.
-- Logout deletes the browser cookie; the stateless JWT remains valid until it expires.
-- JWT revocation is not currently implemented.
-- Rate limits are per IP, so users behind a shared NAT can affect one another; all attempts count toward the limit.
-- All three services share a symmetric JWT signing key.
-- There are no refresh tokens, payment integration, or per-user ticket purchase caps.
-- Login and Cart intentionally share one database.
-- Registration returns distinct "username already in use" and "email already exists" messages, allowing account enumeration. This is a deliberate UX trade-off; login uses identical 401 responses and a dummy hash check.
+- `SameSite=None` is needed for a frontend on a different origin, which means CSRF deserves consideration. JSON-only endpoints plus CORS preflight mitigate it; `Lax`/`Strict` would be better if frontend and API shared a site.
+- Logout only deletes the cookie; the stateless JWT stays valid until it expires (30 minutes). There is no token revocation and no refresh tokens.
+- All three services share one symmetric JWT signing key, and Login and Cart share one database. Both are deliberate simplifications for a small project.
+- Rate limits are per IP, so users behind one NAT share a quota.
+- Registration reports "username taken" and "email taken" separately, which allows account enumeration. This is a deliberate UX trade-off; login responses are uniform.
+- No payment integration and no per-user purchase caps.
 
-## Production considerations
+**What I'd do in production:** revoke tokens with a distributed blocklist (for example Redis, keyed by the token's `jti` with a TTL equal to its remaining lifetime) checked in the auth middleware; asymmetric signing keys so only the Login service can issue tokens; separate databases or schemas per service.
 
-In production, immediate JWT revocation can be implemented with a distributed blocklist such as Redis. On logout or account-security events, store the token's `jti` (or a hash of the token) with a time-to-live no longer than the token's remaining lifetime. Authentication middleware should check that blocklist for each validated token, with a defined cache-availability policy and monitoring. This keeps the API stateless with respect to token contents while allowing all service instances to honor revocation consistently. The current implementation only deletes the browser cookie; the JWT itself remains valid until expiration.
+## Project history
+
+This started as a team project during my ITS course:
+
+- **Ludovico (me):** Login API (registration, BCrypt, JWT in an HttpOnly cookie, logout, login rate limiting), the transactional checkout and purchased-tickets access, security, and the registration, cart and tickets pages of the frontend.
+- **Alessio Mondini:** Gallery API, the exhibitions listing, the first Docker/database setup, and the gallery and ticket-shop pages.
+- **Francesco and Daniele:** the remaining frontend work.
+
+After the course I hardened the project with the help of an AI coding assistant (GitHub Copilot), working from a prompt I wrote and reviewing the results: secrets moved to user-secrets, SQL schema and seed data, input validation, timing-safe login, deadlock-safe lock ordering in checkout, extra rate limiting, the test suites and the CI workflow. The commit history shows which changes were made at each stage.
+
+The frontend repository is private and not linked here.
