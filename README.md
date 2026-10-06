@@ -6,6 +6,18 @@ Backend for a museum website dedicated to the photographer Robert Doisneau: user
 
 Originally a team project from my ITS course; this repository is the hardened version, with a schema, tests and CI added (see [Project history](#project-history)).
 
+## Showcase
+
+Without logging in, the gallery and ticket purchase are blocked:
+
+![Blocked gallery for unregistered users](./screenshots/blocked-gallery.gif)
+
+After registering and logging in, the gallery can be viewed, tickets can be bought, and purchased tickets can be listed:
+
+![Gallery and tickets after login](./screenshots/after-login.gif)
+
+> **Note:** payment is simulated. The frontend shows a placeholder confirmation and then calls the checkout API; the backend handles stock, tickets and atomicity. The plan was to integrate an existing external payment provider.
+
 ## What it does
 
 | Service | HTTPS port | Routes |
@@ -72,7 +84,11 @@ Requirements: .NET 10 SDK and Docker. The companion frontend is a separate priva
 
    ```sh
    dotnet run --project RobertDoisneau.WebApi/RobertDoisneau.Login.WebApi/RobertDoisneau.Login.WebApi.csproj --launch-profile https
+   ```
+   ```sh
    dotnet run --project RobertDoisneau.WebApi/RobertDoisneau.Cart.V2.WebApi/RobertDoisneau.Cart.V2.WebApi.csproj --launch-profile https
+   ```
+   ```sh
    dotnet run --project RobertDoisneau.WebApi/RobertDoisneau.WebApi.GalleryAPI/RobertDoisneau.WebApi.GalleryAPI.csproj --launch-profile https
    ```
 
