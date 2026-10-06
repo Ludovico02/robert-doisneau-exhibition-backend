@@ -151,3 +151,7 @@ This started as a team project during my ITS course:
 In the second year of course, after what I learnt after submitting the project, during my internship and with further self-studied material, I hardened the project with the help of an AI coding assistant (GitHub Copilot) to have a very quick way to polish what was previously done. I wrote a prompt and reviewed the results: secrets moved to user-secrets, SQL schema and seed data, input validation, timing-safe login, deadlock-safe lock ordering in checkout, extra rate limiting, the test suites and the CI workflow. The commit history shows which changes were made at each stage and where copilot came into play.
 
 The frontend repository is private and not linked here.
+
+## LICENSE
+
+Licensed under the [Apache License 2.0](LICENSE).
