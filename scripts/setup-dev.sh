@@ -1,4 +1,3 @@
-#!/usr/bin/env sh
 set -eu
 
 db_password=${1:-change-me}
