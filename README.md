@@ -42,6 +42,53 @@ Login and Cart share the `DBDoisneau` database, because tickets reference users 
 
 **Other.** All SQL is parameterized. Ticket codes come from a cryptographic RNG. Secrets live in .NET user-secrets, not in committed config (and CI scans for leaked secrets), and the services refuse to start with a missing or short (<32 characters) JWT key.
 
+## DB Structure
+
+``` mermaid
+erDiagram
+    users ||--o{ purchased_tickets : "has"
+    exhibitions ||--o{ purchased_tickets : "issues"
+
+    users {
+        int4 id PK
+        varchar_50 username UK
+        varchar_255 password_hash
+        varchar_100 email UK
+        timestamp created_at
+    }
+
+    exhibitions {
+        int4 id PK
+        varchar_255 title
+        text description
+        text description2
+        text description3
+        numeric_18_2 price
+        int4 total_capacity
+        int4 availability
+    }
+
+    purchased_tickets {
+        uuid id PK
+        int4 user_id FK
+        int4 exhibition_id FK
+        varchar_100 unique_code UK
+        numeric_10_2 price_paid
+        timestamp purchase_date
+    }
+
+    gallery {
+        int8 id PK
+        varchar title_ita
+        varchar title_eng
+        varchar site
+        varchar date
+        text description
+        varchar alt_image
+        varchar url_image
+    }
+```
+
 ## Verification
 
 Checked on a fresh clone (October 2026):
