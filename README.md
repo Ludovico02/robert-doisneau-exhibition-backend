@@ -1,4 +1,4 @@
-# Robert Doisneau Museum — Backend
+# Robert Doisneau Exhibition — Backend
 
 [![CI](https://github.com/Ludovico02/robert-doisneau-exhibition-backend/actions/workflows/ci.yml/badge.svg)](https://github.com/Ludovico02/robert-doisneau-exhibition-backend/actions/workflows/ci.yml)
 
